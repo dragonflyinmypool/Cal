@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profit Calculator</title>
+    <title>Real Estate Profit Calculator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -79,12 +79,13 @@
         }
 
         .logo h1 {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 700;
             margin: 0;
             background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         /* Tabs Styling */
@@ -356,6 +357,52 @@
         canvas {
             max-width: 100%;
         }
+
+        /* Enhanced card styling */
+        .card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+            opacity: 0.5;
+        }
+
+        /* Improved profit metric styling */
+        .profit-metric {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(129, 140, 248, 0.05) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .profit-metric-value {
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Tab styling improvements */
+        .tab-btn {
+            position: relative;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            border-radius: 1px;
+        }
     </style>
 </head>
 
@@ -365,17 +412,18 @@
         <header>
             <div class="logo">
                 <i data-lucide="bar-chart-3" size="20" stroke-width="2.5"></i>
-                <h1>Profit Calculator</h1>
+                <h1>Real Estate Profit Calculator</h1>
             </div>
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('costs')">Costs</button>
-            <button class="tab-btn" onclick="switchTab('returns')">Returns</button>
+            <button class="tab-btn active" onclick="switchTab('investment')">Investment</button>
+            <button class="tab-btn" onclick="switchTab('revenue')">Revenue</button>
+            <button class="tab-btn" onclick="switchTab('profit')">Profit</button>
         </div>
 
-        <!-- Costs Tab -->
-        <div id="costs" class="tab-content active">
+        <!-- Investment Tab -->
+        <div id="investment" class="tab-content active">
             <div class="card">
                 <div class="input-group">
                     <label>Purchase Price</label>
@@ -441,8 +489,8 @@
             </div>
         </div>
 
-        <!-- Returns Tab -->
-        <div id="returns" class="tab-content">
+        <!-- Revenue Tab -->
+        <div id="revenue" class="tab-content">
             <div class="card">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div class="input-group">
@@ -500,6 +548,50 @@
                 </div>
             </div>
         </div>
+
+        <!-- Profit Tab -->
+        <div id="profit" class="tab-content">
+            <div class="card">
+                <div class="profit-summary" style="margin-top: 0;">
+                    <div class="profit-summary-grid">
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">Total Investment</div>
+                            <div class="profit-metric-value" id="profit-tab-costs">$0</div>
+                        </div>
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">Total Revenue</div>
+                            <div class="profit-metric-value" id="profit-tab-returns">$0</div>
+                        </div>
+                    </div>
+                    <div class="profit-total">
+                        <div class="profit-total-label">Net Profit</div>
+                        <div class="profit-total-value" id="profit-tab-profit">$0</div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Waterfall Chart -->
+                <div class="chart-container">
+                    <div class="chart-label">Profit Breakdown</div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="profit-waterfall-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Profit Metrics -->
+                <div class="profit-summary">
+                    <div class="profit-summary-grid">
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">ROI</div>
+                            <div class="profit-metric-value" id="profit-roi">0%</div>
+                        </div>
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">Margin</div>
+                            <div class="profit-metric-value" id="profit-margin">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -507,6 +599,7 @@
 
         let costsChartInstance = null;
         let returnsChartInstance = null;
+        let profitChartInstance = null;
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -518,6 +611,7 @@
             setTimeout(() => {
                 if (costsChartInstance) costsChartInstance.resize();
                 if (returnsChartInstance) returnsChartInstance.resize();
+                if (profitChartInstance) profitChartInstance.resize();
             }, 0);
         }
 
@@ -543,9 +637,9 @@
                         label: 'Amount',
                         data: [totalOut, totalIn, Math.max(0, profit)],
                         backgroundColor: ['#f43f5e', '#10b981', profitColor],
-                        borderColor: ['rgba(244, 63, 94, 0.8)', 'rgba(16, 185, 129, 0.8)', profitColor],
-                        borderWidth: 2,
-                        borderRadius: 8,
+                        borderColor: ['#ff6b7a', '#22d3ee', profitColor === '#10b981' ? '#34d399' : '#ff7a8f'],
+                        borderWidth: 3,
+                        borderRadius: 10,
                     }]
                 },
                 options: {
@@ -615,6 +709,8 @@
                 costsChartInstance.destroy();
             } else if (canvasId === 'returns-waterfall-chart' && returnsChartInstance) {
                 returnsChartInstance.destroy();
+            } else if (canvasId === 'profit-waterfall-chart' && profitChartInstance) {
+                profitChartInstance.destroy();
             }
 
             const newChart = new Chart(ctx, chartConfig);
@@ -623,6 +719,8 @@
                 costsChartInstance = newChart;
             } else if (canvasId === 'returns-waterfall-chart') {
                 returnsChartInstance = newChart;
+            } else if (canvasId === 'profit-waterfall-chart') {
+                profitChartInstance = newChart;
             }
         }
 
@@ -648,6 +746,27 @@
             // Create/update waterfall charts
             createWaterfallChart('costs-waterfall-chart', totalOut, totalIn, profit);
             createWaterfallChart('returns-waterfall-chart', totalOut, totalIn, profit);
+            createWaterfallChart('profit-waterfall-chart', totalOut, totalIn, profit);
+
+            // Update Profit tab displays
+            document.getElementById("profit-tab-costs").textContent = format(totalOut);
+            document.getElementById("profit-tab-returns").textContent = format(totalIn);
+            const profitTabProfitEl = document.getElementById("profit-tab-profit");
+            profitTabProfitEl.textContent = format(profit);
+            profitTabProfitEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
+
+            // Calculate and display ROI and Margin
+            const roi = totalOut > 0 ? ((profit / totalOut) * 100) : 0;
+            const margin = totalIn > 0 ? ((profit / totalIn) * 100) : 0;
+
+            document.getElementById("profit-roi").textContent = roi.toFixed(1) + '%';
+            document.getElementById("profit-margin").textContent = margin.toFixed(1) + '%';
+
+            // Color ROI and Margin based on profit
+            const roiEl = document.getElementById("profit-roi");
+            const marginEl = document.getElementById("profit-margin");
+            roiEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
+            marginEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
         }
 
         calculate();
