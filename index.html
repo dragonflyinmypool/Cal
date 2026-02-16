@@ -21,6 +21,8 @@
             --text-dim: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.1);
             --glass-glow: rgba(56, 189, 248, 0.1);
+            --cost-color: #e57373;
+            --income-color: #66bb6a;
         }
 
         * {
@@ -357,6 +359,55 @@
             background-clip: text;
         }
 
+        /* Cost/Income label colors */
+        .label-cost { color: var(--cost-color); }
+        .label-income { color: var(--income-color); }
+
+        /* Info tooltip */
+        .info-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-dim);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .info-btn:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            top: 32px;
+            right: 0;
+            width: 260px;
+            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-dim);
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.5;
+            z-index: 10;
+            backdrop-filter: blur(12px);
+        }
+        .info-btn:hover .tooltip,
+        .info-btn:focus .tooltip {
+            display: block;
+        }
+
         /* Tab styling improvements */
         .tab-btn {
             position: relative;
@@ -383,47 +434,50 @@
                 <i data-lucide="bar-chart-3" size="20" stroke-width="2.5"></i>
                 <h1>Real Estate Profit Calculator</h1>
             </div>
+            <button class="info-btn" aria-label="About this tool">i
+                <div class="tooltip">A simple calculator for first-time home buyers to estimate whether a property is a good investment. Enter your costs, expected sale price, and monthly expenses to see your total profit or loss.</div>
+            </button>
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('buySell')">Buying the House</button>
-            <button class="tab-btn" onclick="switchTab('monthly')">Monthly Costs/Profit</button>
-            <button class="tab-btn" onclick="switchTab('summary')">Your Investment Summary</button>
+            <button class="tab-btn active" onclick="switchTab('buySell')">Buy & Sell</button>
+            <button class="tab-btn" onclick="switchTab('monthly')">Monthly Costs</button>
+            <button class="tab-btn" onclick="switchTab('summary')">Total Profit</button>
         </div>
 
         <!-- Buying the House Tab -->
         <div id="buySell" class="tab-content active">
             <div class="card">
                 <div class="input-group">
-                    <label>Home Price</label>
+                    <label class="label-cost">Home Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="homePrice" type="text" inputmode="numeric" value="200,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Closing Costs (2-5% of price)</label>
+                    <label class="label-cost">Closing Costs (2-5% of price)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="closingCosts" type="text" inputmode="numeric" value="8,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Repairs / Upgrades</label>
+                    <label class="label-cost">Repairs / Upgrades</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="repairs" type="text" inputmode="numeric" value="20,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Estimated Sale Price</label>
+                    <label class="label-income">Estimated Sale Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="salePrice" type="text" inputmode="numeric" value="280,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Selling Costs (~6% of sale price)</label>
+                    <label class="label-cost">Selling Costs (~6% of sale price)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="sellingCosts" type="text" inputmode="numeric" value="17,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
@@ -453,14 +507,14 @@
         <div id="monthly" class="tab-content">
             <div class="card">
                 <div class="input-group">
-                    <label>Monthly Income (leave blank if owner-occupied)</label>
+                    <label class="label-income">Monthly Income (leave blank if owner-occupied)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="monthlyIncome" type="text" inputmode="numeric" value="0" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Monthly Costs (mortgage, insurance, taxes, maintenance)</label>
+                    <label class="label-cost">Monthly Costs (mortgage, insurance, taxes, maintenance)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="monthlyCosts" type="text" inputmode="numeric" value="1,500" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
