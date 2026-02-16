@@ -327,36 +327,6 @@
             transition: color 0.3s ease;
         }
 
-        /* Waterfall Chart Container */
-        .chart-container {
-            margin-top: 24px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            height: 320px;
-        }
-
-        .chart-label {
-            font-size: 13px;
-            color: var(--text-dim);
-            margin-bottom: 16px;
-            text-align: center;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .chart-canvas-wrapper {
-            position: relative;
-            height: 260px;
-        }
-
-        canvas {
-            max-width: 100%;
-        }
-
         /* Enhanced card styling */
         .card {
             position: relative;
@@ -428,28 +398,35 @@
                     <label>Home Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="homePrice" type="number" value="200000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
+                        <input id="homePrice" type="text" inputmode="numeric" value="200,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Closing Costs (2-5% of price)</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="closingCosts" type="number" value="8000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
+                        <input id="closingCosts" type="text" inputmode="numeric" value="8,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Repairs / Upgrades</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="repairs" type="number" value="20000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
+                        <input id="repairs" type="text" inputmode="numeric" value="20,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Estimated Sale Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="salePrice" type="number" value="280000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
+                        <input id="salePrice" type="text" inputmode="numeric" value="280,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Selling Costs (~6% of sale price)</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="sellingCosts" type="text" inputmode="numeric" value="17,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
 
@@ -479,14 +456,14 @@
                     <label>Monthly Income (leave blank if owner-occupied)</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="monthlyIncome" type="number" value="2500" oninput="calculateMonthlyProfit(); calculateTotalProfit()">
+                        <input id="monthlyIncome" type="text" inputmode="numeric" value="0" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Monthly Costs (mortgage, insurance, taxes, maintenance)</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="monthlyCosts" type="number" value="1500" oninput="calculateMonthlyProfit(); calculateTotalProfit()">
+                        <input id="monthlyCosts" type="text" inputmode="numeric" value="1,500" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
@@ -506,11 +483,11 @@
                         <span class="result-value" id="monthly-costs">$0</span>
                     </div>
                     <div class="profit-total">
-                        <div class="profit-total-label">Monthly Profit / Loss</div>
+                        <div class="profit-total-label">Total Cash Flow</div>
                         <div class="profit-total-value" id="monthly-profit">$0</div>
                     </div>
                     <div class="result-row" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <span class="result-label">Average Per Month</span>
+                        <span class="result-label">Per Month</span>
                         <span class="result-value" id="monthly-average">$0</span>
                     </div>
                 </div>
@@ -527,7 +504,7 @@
                         <span class="result-value" id="summary-buySell">$0</span>
                     </div>
                     <div class="result-row">
-                        <span class="result-label">From Monthly Payments</span>
+                        <span class="result-label">From Monthly Cash Flow</span>
                         <span class="result-value" id="summary-monthly">$0</span>
                     </div>
                     <div class="profit-total">
@@ -563,11 +540,23 @@
             totalProfit: 0
         };
 
-        function val(id) { return Number(document.getElementById(id).value) || 0; }
+        function val(id) { return Number(document.getElementById(id).value.replace(/,/g, '')) || 0; }
         function format(num) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency', currency: 'USD', maximumFractionDigits: 0
             }).format(num);
+        }
+        function formatInput(el) {
+            const raw = el.value.replace(/,/g, '');
+            if (raw === '' || raw === '-') return;
+            const num = Number(raw);
+            if (!isNaN(num)) {
+                const pos = el.selectionStart;
+                const oldLen = el.value.length;
+                el.value = num.toLocaleString('en-US');
+                const newLen = el.value.length;
+                el.setSelectionRange(pos + newLen - oldLen, pos + newLen - oldLen);
+            }
         }
 
         function switchTab(tabId) {
@@ -584,7 +573,7 @@
             const salePrice = val("salePrice");
 
             buySellData.invested = homePrice + closingCosts + repairs;
-            buySellData.proceeds = salePrice;
+            buySellData.proceeds = salePrice - val("sellingCosts");
             buySellData.profit = buySellData.proceeds - buySellData.invested;
 
             // Update display
@@ -626,8 +615,6 @@
             totalEl.textContent = format(totalData.totalProfit);
             totalEl.style.color = totalData.totalProfit >= 0 ? "var(--success)" : "var(--error)";
 
-            // Create/update chart
-            createSummaryChart();
         }
 
 
