@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b0f1a;
+            --surface-color: rgba(30, 41, 59, 0.7);
+            --primary-accent: #38bdf8;
+            --secondary-accent: #818cf8;
+            --success: #10b981;
+            --error: #f43f5e;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --glass-glow: rgba(56, 189, 248, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        æ body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 35%),
+                radial-gradient(circle at 100% 100%, rgba(129, 140, 248, 0.1) 0%, transparent 35%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Tabs Styling */
+        .tabs {
+            display: flex;
+            background: rgba(30, 41, 59, 0.5);
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--surface-color);
+            color: var(--primary-accent);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .card-header i {
+            color: var(--primary-accent);
+        }
+
+        .card h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary-accent);
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+            padding-left: 2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper span {
+            position: absolute;
+            left: 10px;
+            color: var(--text-dim);
+            font-size: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 12px 12px 24px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--primary-accent);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .result-label {
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        .result-value {
+            font-weight: 600;
+        }
+
+        .profit-highlight {
+            margin-top: 16px;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .profit-amount {
+            font-size: 36px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        /* Profit Display in Returns Tab */
+        .profit-display {
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .profit-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .profit-value {
+            font-size: 32px;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        /* Profit Summary Panel */
+        .profit-summary {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+        }
+
+        .profit-summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .profit-metric {
+            text-align: center;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .profit-metric-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .profit-metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .profit-total {
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .profit-total-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .profit-total-value {
+            font-size: 36px;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        /* Waterfall Chart Container */
+        .chart-container {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            height: 320px;
+        }
+
+        .chart-label {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-canvas-wrapper {
+            position: relative;
+            height: 260px;
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i data-lucide="bar-chart-3" size="20" stroke-width="2.5"></i>
+                <h1>Profit Calculator</h1>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('costs')">Costs</button>
+            <button class="tab-btn" onclick="switchTab('returns')">Returns</button>
+        </div>
+
+        <!-- Costs Tab -->
+        <div id="costs" class="tab-content active">
+            <div class="card">
+                <div class="input-group">
+                    <label>Purchase Price</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="purchasePrice" type="number" value="200000" oninput="calculate()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Closing Costs (Buy)</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="buyClosing" type="number" value="5000" oninput="calculate()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Repairs</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="repairs" type="number" value="20000" oninput="calculate()">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="input-group">
+                        <label>Monthly Exp.</label>
+                        <div class="input-wrapper">
+                            <span>$</span>
+                            <input id="monthlyExpenses" type="number" value="1500" oninput="calculate()">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Months Held</label>
+                        <input id="monthsHeld" type="number" value="12" style="padding-left:12px;"
+                            oninput="calculate()">
+                    </div>
+                </div>
+
+                <!-- Profit Summary Panel -->
+                <div class="profit-summary">
+                    <div class="profit-summary-grid">
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">Total Costs</div>
+                            <div class="profit-metric-value" id="costs-total-display">$0</div>
+                        </div>
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">Total Returns</div>
+                            <div class="profit-metric-value" id="returns-total-display">$0</div>
+                        </div>
+                    </div>
+                    <div class="profit-total">
+                        <div class="profit-total-label">Net Profit</div>
+                        <div class="profit-total-value" id="costs-profit-display">$0</div>
+                    </div>
+                </div>
+
+                <!-- Waterfall Chart -->
+                <div class="chart-container">
+                    <div class="chart-label">Profit Analysis</div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="costs-waterfall-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Returns Tab -->
+        <div id="returns" class="tab-content">
+            <div class="card">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="input-group">
+                        <label>Monthly Rent</label>
+                        <div class="input-wrapper">
+                            <span>$</span>
+                            <input id="rent" type="number" value="2500" oninput="calculate()">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Months Rented</label>
+                        <input id="monthsRented" type="number" value="12" style="padding-left:12px;"
+                            oninput="calculate()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Sale Price</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="salePrice" type="number" value="280000" oninput="calculate()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Selling Costs</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="sellCosts" type="number" value="15000" oninput="calculate()">
+                    </div>
+                </div>
+
+                <!-- Profit Summary Panel -->
+                <div class="profit-summary">
+                    <div class="profit-summary-grid">
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">Total Costs</div>
+                            <div class="profit-metric-value" id="returns-costs-display">$0</div>
+                        </div>
+                        <div class="profit-metric">
+                            <div class="profit-metric-label">Total Returns</div>
+                            <div class="profit-metric-value" id="returns-returns-display">$0</div>
+                        </div>
+                    </div>
+                    <div class="profit-total">
+                        <div class="profit-total-label">Net Profit</div>
+                        <div class="profit-total-value" id="returns-profit-display">$0</div>
+                    </div>
+                </div>
+
+                <!-- Waterfall Chart -->
+                <div class="chart-container">
+                    <div class="chart-label">Profit Analysis</div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="returns-waterfall-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let costsChartInstance = null;
+        let returnsChartInstance = null;
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+
+            // Trigger chart resize when switching tabs
+            setTimeout(() => {
+                if (costsChartInstance) costsChartInstance.resize();
+                if (returnsChartInstance) returnsChartInstance.resize();
+            }, 0);
+        }
+
+        function val(id) { return Number(document.getElementById(id).value) || 0; }
+        function format(num) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency', currency: 'USD', maximumFractionDigits: 0
+            }).format(num);
+        }
+
+        function createWaterfallChart(canvasId, totalOut, totalIn, profit) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return;
+
+            const maxValue = Math.max(totalOut, totalIn, Math.abs(profit)) * 1.2;
+            const profitColor = profit >= 0 ? '#10b981' : '#f43f5e';
+
+            const chartConfig = {
+                type: 'bar',
+                data: {
+                    labels: ['Costs', 'Returns', 'Profit'],
+                    datasets: [{
+                        label: 'Amount',
+                        data: [totalOut, totalIn, Math.max(0, profit)],
+                        backgroundColor: ['#f43f5e', '#10b981', profitColor],
+                        borderColor: ['rgba(244, 63, 94, 0.8)', 'rgba(16, 185, 129, 0.8)', profitColor],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#f8fafc',
+                            borderColor: '#38bdf8',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function (context) {
+                                    return format(context.parsed.x);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: maxValue,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 12,
+                                    family: "'Outfit', sans-serif"
+                                },
+                                callback: function (value) {
+                                    if (value === 0) return '';
+                                    return '$' + (value / 1000).toFixed(0) + 'k';
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 12,
+                                    font: {
+                                        weight: 600,
+                                        family: "'Outfit', sans-serif"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Destroy existing chart if it exists
+            if (canvasId === 'costs-waterfall-chart' && costsChartInstance) {
+                costsChartInstance.destroy();
+            } else if (canvasId === 'returns-waterfall-chart' && returnsChartInstance) {
+                returnsChartInstance.destroy();
+            }
+
+            const newChart = new Chart(ctx, chartConfig);
+
+            if (canvasId === 'costs-waterfall-chart') {
+                costsChartInstance = newChart;
+            } else if (canvasId === 'returns-waterfall-chart') {
+                returnsChartInstance = newChart;
+            }
+        }
+
+        function calculate() {
+            const totalOut = val("purchasePrice") + val("buyClosing") + val("repairs") + (val("monthlyExpenses") * val("monthsHeld"));
+            const totalIn = (val("rent") * val("monthsRented")) + (val("salePrice") - val("sellCosts"));
+            const profit = totalIn - totalOut;
+
+            // Update Costs tab displays
+            document.getElementById("costs-total-display").textContent = format(totalOut);
+            document.getElementById("returns-total-display").textContent = format(totalIn);
+            const costsProfitEl = document.getElementById("costs-profit-display");
+            costsProfitEl.textContent = format(profit);
+            costsProfitEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
+
+            // Update Returns tab displays
+            document.getElementById("returns-costs-display").textContent = format(totalOut);
+            document.getElementById("returns-returns-display").textContent = format(totalIn);
+            const returnsProfitEl = document.getElementById("returns-profit-display");
+            returnsProfitEl.textContent = format(profit);
+            returnsProfitEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
+
+            // Create/update waterfall charts
+            createWaterfallChart('costs-waterfall-chart', totalOut, totalIn, profit);
+            createWaterfallChart('returns-waterfall-chart', totalOut, totalIn, profit);
+        }
+
+        calculate();
+    </script>
+</body>
+
+</html>
