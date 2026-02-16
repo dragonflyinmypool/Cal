@@ -570,26 +570,26 @@
             const ctx = document.getElementById(canvasId);
             if (!ctx) return;
 
-            const maxValue = Math.max(totalOut, totalIn, Math.abs(profit)) * 1.2;
             const profitColor = profit >= 0 ? '#10b981' : '#f43f5e';
+            const maxValue = Math.max(totalOut, totalIn) * 1.1;
 
             const chartConfig = {
                 type: 'bar',
                 data: {
-                    labels: ['Costs', 'Returns', 'Profit'],
+                    labels: ['Cost', 'Profit', 'Revenue'],
                     datasets: [{
                         label: 'Amount',
-                        data: [totalOut, totalIn, Math.max(0, profit)],
-                        backgroundColor: ['#f43f5e', '#10b981', profitColor],
-                        borderColor: ['#ff6b7a', '#22d3ee', profitColor === '#10b981' ? '#34d399' : '#ff7a8f'],
-                        borderWidth: 3,
-                        borderRadius: 10,
+                        data: [totalOut, Math.max(0, profit), totalIn],
+                        backgroundColor: ['#f43f5e', profitColor, '#38bdf8'],
+                        borderColor: ['#ff6b7a', profitColor === '#10b981' ? '#34d399' : '#ff7a8f', '#60a5fa'],
+                        borderWidth: 2,
+                        borderRadius: 8,
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    indexAxis: 'y',
+                    indexAxis: 'x',
                     plugins: {
                         legend: {
                             display: false
@@ -604,13 +604,13 @@
                             displayColors: false,
                             callbacks: {
                                 label: function (context) {
-                                    return format(context.parsed.x);
+                                    return format(context.parsed.y);
                                 }
                             }
                         }
                     },
                     scales: {
-                        x: {
+                        y: {
                             beginAtZero: true,
                             max: maxValue,
                             grid: {
@@ -629,18 +629,16 @@
                                 }
                             }
                         },
-                        y: {
+                        x: {
                             grid: {
                                 display: false
                             },
                             ticks: {
                                 color: '#94a3b8',
                                 font: {
-                                    size: 12,
-                                    font: {
-                                        weight: 600,
-                                        family: "'Outfit', sans-serif"
-                                    }
+                                    size: 13,
+                                    weight: 600,
+                                    family: "'Outfit', sans-serif"
                                 }
                             }
                         }
