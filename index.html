@@ -460,32 +460,6 @@
                             oninput="calculate()">
                     </div>
                 </div>
-
-                <!-- Profit Summary Panel -->
-                <div class="profit-summary">
-                    <div class="profit-summary-grid">
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">Total Costs</div>
-                            <div class="profit-metric-value" id="costs-total-display">$0</div>
-                        </div>
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">Total Returns</div>
-                            <div class="profit-metric-value" id="returns-total-display">$0</div>
-                        </div>
-                    </div>
-                    <div class="profit-total">
-                        <div class="profit-total-label">Net Profit</div>
-                        <div class="profit-total-value" id="costs-profit-display">$0</div>
-                    </div>
-                </div>
-
-                <!-- Waterfall Chart -->
-                <div class="chart-container">
-                    <div class="chart-label">Profit Analysis</div>
-                    <div class="chart-canvas-wrapper">
-                        <canvas id="costs-waterfall-chart"></canvas>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -518,32 +492,6 @@
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="sellCosts" type="number" value="15000" oninput="calculate()">
-                    </div>
-                </div>
-
-                <!-- Profit Summary Panel -->
-                <div class="profit-summary">
-                    <div class="profit-summary-grid">
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">Total Costs</div>
-                            <div class="profit-metric-value" id="returns-costs-display">$0</div>
-                        </div>
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">Total Returns</div>
-                            <div class="profit-metric-value" id="returns-returns-display">$0</div>
-                        </div>
-                    </div>
-                    <div class="profit-total">
-                        <div class="profit-total-label">Net Profit</div>
-                        <div class="profit-total-value" id="returns-profit-display">$0</div>
-                    </div>
-                </div>
-
-                <!-- Waterfall Chart -->
-                <div class="chart-container">
-                    <div class="chart-label">Profit Analysis</div>
-                    <div class="chart-canvas-wrapper">
-                        <canvas id="returns-waterfall-chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -597,8 +545,6 @@
     <script>
         lucide.createIcons();
 
-        let costsChartInstance = null;
-        let returnsChartInstance = null;
         let profitChartInstance = null;
 
         function switchTab(tabId) {
@@ -609,8 +555,6 @@
 
             // Trigger chart resize when switching tabs
             setTimeout(() => {
-                if (costsChartInstance) costsChartInstance.resize();
-                if (returnsChartInstance) returnsChartInstance.resize();
                 if (profitChartInstance) profitChartInstance.resize();
             }, 0);
         }
@@ -705,21 +649,13 @@
             };
 
             // Destroy existing chart if it exists
-            if (canvasId === 'costs-waterfall-chart' && costsChartInstance) {
-                costsChartInstance.destroy();
-            } else if (canvasId === 'returns-waterfall-chart' && returnsChartInstance) {
-                returnsChartInstance.destroy();
-            } else if (canvasId === 'profit-waterfall-chart' && profitChartInstance) {
+            if (canvasId === 'profit-waterfall-chart' && profitChartInstance) {
                 profitChartInstance.destroy();
             }
 
             const newChart = new Chart(ctx, chartConfig);
 
-            if (canvasId === 'costs-waterfall-chart') {
-                costsChartInstance = newChart;
-            } else if (canvasId === 'returns-waterfall-chart') {
-                returnsChartInstance = newChart;
-            } else if (canvasId === 'profit-waterfall-chart') {
+            if (canvasId === 'profit-waterfall-chart') {
                 profitChartInstance = newChart;
             }
         }
@@ -729,23 +665,7 @@
             const totalIn = (val("rent") * val("monthsRented")) + (val("salePrice") - val("sellCosts"));
             const profit = totalIn - totalOut;
 
-            // Update Costs tab displays
-            document.getElementById("costs-total-display").textContent = format(totalOut);
-            document.getElementById("returns-total-display").textContent = format(totalIn);
-            const costsProfitEl = document.getElementById("costs-profit-display");
-            costsProfitEl.textContent = format(profit);
-            costsProfitEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
-
-            // Update Returns tab displays
-            document.getElementById("returns-costs-display").textContent = format(totalOut);
-            document.getElementById("returns-returns-display").textContent = format(totalIn);
-            const returnsProfitEl = document.getElementById("returns-profit-display");
-            returnsProfitEl.textContent = format(profit);
-            returnsProfitEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
-
-            // Create/update waterfall charts
-            createWaterfallChart('costs-waterfall-chart', totalOut, totalIn, profit);
-            createWaterfallChart('returns-waterfall-chart', totalOut, totalIn, profit);
+            // Create/update waterfall chart
             createWaterfallChart('profit-waterfall-chart', totalOut, totalIn, profit);
 
             // Update Profit tab displays
