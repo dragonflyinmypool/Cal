@@ -495,6 +495,67 @@
         .info-btn:focus .tooltip {
             display: block;
         }
+
+        /* CTA Banner */
+        .cta-banner {
+            margin-top: 32px;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(129, 140, 248, 0.08) 100%);
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .cta-banner p {
+            margin: 0 0 14px;
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        .cta-banner a {
+            display: inline-block;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: var(--bg-color);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .cta-banner a:hover {
+            opacity: 0.85;
+        }
+
+        /* Footer */
+        .site-footer {
+            margin-top: 16px;
+            padding: 16px 0 20px;
+            text-align: center;
+        }
+
+        .site-footer a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 11px;
+            opacity: 0.5;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .site-footer a:hover {
+            opacity: 0.8;
+        }
+
+        .site-footer svg {
+            width: 13px;
+            height: 13px;
+        }
     </style>
 </head>
 
@@ -776,6 +837,20 @@
                     <div class="profit-total-value" id="summary-total">$0</div>
                 </div>
             </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-banner">
+            <p>Want this calculator branded for your real estate business?</p>
+            <a href="https://wa.me/18483524695?text=I%27m%20interested%20in%20a%20custom-branded%20calculator" target="_blank" rel="noopener">Get Your Custom Version</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="site-footer">
+            <a href="https://wa.me/18483524695" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.5 2C9.5 2 8 5 8 8c0 1.5.5 3 1.5 4C8 13 7 14.5 7 16.5 7 19.5 9 22 12 22s5-2.5 5-5.5c0-2-1-3.5-2.5-4.5 1-1 1.5-2.5 1.5-4 0-3-1.5-6-1.5-6S13.5 3 12 3 9.5 2 9.5 2zM10.5 16a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
+                Created by White Rabbit
+            </a>
         </div>
     </div>
 
