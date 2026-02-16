@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --bg-color: #0b0f1a;
@@ -470,13 +469,6 @@
                     </div>
                 </div>
 
-                <!-- Buy/Sell Chart -->
-                <div class="chart-container">
-                    <div class="chart-label">Buying & Selling Breakdown</div>
-                    <div class="chart-canvas-wrapper">
-                        <canvas id="buySell-chart"></canvas>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -523,13 +515,6 @@
                     </div>
                 </div>
 
-                <!-- Monthly Chart -->
-                <div class="chart-container">
-                    <div class="chart-label">Monthly Cash Flow</div>
-                    <div class="chart-canvas-wrapper">
-                        <canvas id="monthly-chart"></canvas>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -551,24 +536,12 @@
                     </div>
                 </div>
 
-                <!-- Total Profit Chart -->
-                <div class="chart-container">
-                    <div class="chart-label">Total Profit Breakdown</div>
-                    <div class="chart-canvas-wrapper">
-                        <canvas id="summary-chart"></canvas>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
         lucide.createIcons();
-
-        // Chart instances
-        let buySellChartInstance = null;
-        let monthlyChartInstance = null;
-        let summaryChartInstance = null;
 
         // State management
         let buySellData = {
@@ -602,13 +575,6 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
-
-            // Trigger chart resize when switching tabs
-            setTimeout(() => {
-                if (buySellChartInstance) buySellChartInstance.resize();
-                if (monthlyChartInstance) monthlyChartInstance.resize();
-                if (summaryChartInstance) summaryChartInstance.resize();
-            }, 0);
         }
 
         function calculateBuySellProfit() {
@@ -627,9 +593,6 @@
             const profitEl = document.getElementById("buySell-profit");
             profitEl.textContent = format(buySellData.profit);
             profitEl.style.color = buySellData.profit >= 0 ? "var(--success)" : "var(--error)";
-
-            // Create/update chart
-            createChart('buySell-chart', buySellData.invested, buySellData.proceeds, buySellData.profit);
         }
 
         function calculateMonthlyProfit() {
@@ -649,9 +612,6 @@
             profitEl.textContent = format(monthlyData.profit);
             profitEl.style.color = monthlyData.profit >= 0 ? "var(--success)" : "var(--error)";
             document.getElementById("monthly-average").textContent = format(monthlyData.monthlyAverage);
-
-            // Create/update chart
-            createChart('monthly-chart', monthlyData.totalCosts, monthlyData.totalIncome, monthlyData.profit);
         }
 
         function calculateTotalProfit() {
@@ -670,181 +630,6 @@
             createSummaryChart();
         }
 
-        function createChart(canvasId, cost, revenue, profit) {
-            const ctx = document.getElementById(canvasId);
-            if (!ctx) return;
-
-            const profitColor = profit >= 0 ? '#10b981' : '#f43f5e';
-            const maxValue = Math.max(cost, revenue) * 1.1;
-
-            const chartConfig = {
-                type: 'bar',
-                data: {
-                    labels: ['Cost', 'Profit', 'Revenue'],
-                    datasets: [{
-                        label: 'Amount',
-                        data: [cost, Math.max(0, profit), revenue],
-                        backgroundColor: ['#f43f5e', profitColor, '#38bdf8'],
-                        borderColor: ['#ff6b7a', profitColor === '#10b981' ? '#34d399' : '#ff7a8f', '#60a5fa'],
-                        borderWidth: 2,
-                        borderRadius: 8,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'x',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                            titleColor: '#f8fafc',
-                            bodyColor: '#f8fafc',
-                            borderColor: '#38bdf8',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                label: function (context) {
-                                    return format(context.parsed.y);
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: maxValue,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.05)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: {
-                                    size: 12,
-                                    family: "'Outfit', sans-serif"
-                                },
-                                callback: function (value) {
-                                    if (value === 0) return '';
-                                    return '$' + (value / 1000).toFixed(0) + 'k';
-                                }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: {
-                                    size: 13,
-                                    weight: 600,
-                                    family: "'Outfit', sans-serif"
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            // Destroy and recreate chart
-            if (canvasId === 'buySell-chart') {
-                if (buySellChartInstance) buySellChartInstance.destroy();
-                buySellChartInstance = new Chart(ctx, chartConfig);
-            } else if (canvasId === 'monthly-chart') {
-                if (monthlyChartInstance) monthlyChartInstance.destroy();
-                monthlyChartInstance = new Chart(ctx, chartConfig);
-            }
-        }
-
-        function createSummaryChart() {
-            const ctx = document.getElementById('summary-chart');
-            if (!ctx) return;
-
-            const buySellColor = totalData.buySellProfit >= 0 ? '#10b981' : '#f43f5e';
-            const monthlyColor = totalData.monthlyProfit >= 0 ? '#10b981' : '#f43f5e';
-            const maxValue = Math.max(Math.abs(totalData.buySellProfit), Math.abs(totalData.monthlyProfit), Math.abs(totalData.totalProfit)) * 1.2;
-
-            const chartConfig = {
-                type: 'bar',
-                data: {
-                    labels: ['Buying & Selling', 'Monthly Payments', 'Total'],
-                    datasets: [{
-                        label: 'Amount',
-                        data: [totalData.buySellProfit, totalData.monthlyProfit, totalData.totalProfit],
-                        backgroundColor: [buySellColor, monthlyColor, totalData.totalProfit >= 0 ? '#10b981' : '#f43f5e'],
-                        borderColor: [buySellColor, monthlyColor, totalData.totalProfit >= 0 ? '#34d399' : '#ff7a8f'],
-                        borderWidth: 2,
-                        borderRadius: 8,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'x',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                            titleColor: '#f8fafc',
-                            bodyColor: '#f8fafc',
-                            borderColor: '#38bdf8',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                label: function (context) {
-                                    return format(context.parsed.y);
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: maxValue,
-                            min: -maxValue,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.05)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: {
-                                    size: 12,
-                                    family: "'Outfit', sans-serif"
-                                },
-                                callback: function (value) {
-                                    if (value === 0) return '';
-                                    return '$' + (value / 1000).toFixed(0) + 'k';
-                                }
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#94a3b8',
-                                font: {
-                                    size: 13,
-                                    weight: 600,
-                                    family: "'Outfit', sans-serif"
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-            if (summaryChartInstance) summaryChartInstance.destroy();
-            summaryChartInstance = new Chart(ctx, chartConfig);
-        }
 
         // Initialize calculations
         calculateBuySellProfit();
