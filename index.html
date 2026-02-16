@@ -359,9 +359,9 @@
             background-clip: text;
         }
 
-        /* Cost/Income label colors */
-        .label-cost { color: var(--cost-color); }
-        .label-income { color: var(--income-color); }
+        /* Cost/Income result value colors */
+        .value-cost { color: var(--cost-color); }
+        .value-income { color: var(--income-color); }
 
         /* Info tooltip */
         .info-btn {
@@ -449,35 +449,35 @@
         <div id="buySell" class="tab-content active">
             <div class="card">
                 <div class="input-group">
-                    <label class="label-cost">Home Price</label>
+                    <label >Home Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="homePrice" type="text" inputmode="numeric" value="200,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label class="label-cost">Closing Costs (2-5% of price)</label>
+                    <label >Closing Costs (2-5% of price)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="closingCosts" type="text" inputmode="numeric" value="8,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label class="label-cost">Repairs / Upgrades</label>
+                    <label >Repairs / Upgrades</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="repairs" type="text" inputmode="numeric" value="20,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label class="label-income">Estimated Sale Price</label>
+                    <label >Estimated Sale Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="salePrice" type="text" inputmode="numeric" value="280,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label class="label-cost">Selling Costs (~6% of sale price)</label>
+                    <label >Selling Costs (~6% of sale price)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="sellingCosts" type="text" inputmode="numeric" value="17,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
@@ -488,11 +488,11 @@
                 <div class="profit-summary" style="margin-top: 24px;">
                     <div class="result-row">
                         <span class="result-label">What You Put In</span>
-                        <span class="result-value" id="buySell-invested">$0</span>
+                        <span class="result-value value-cost" id="buySell-invested">$0</span>
                     </div>
                     <div class="result-row">
                         <span class="result-label">What You'll Get Back</span>
-                        <span class="result-value" id="buySell-proceeds">$0</span>
+                        <span class="result-value value-income" id="buySell-proceeds">$0</span>
                     </div>
                     <div class="profit-total">
                         <div class="profit-total-label">Your Gain / Loss</div>
@@ -507,14 +507,14 @@
         <div id="monthly" class="tab-content">
             <div class="card">
                 <div class="input-group">
-                    <label class="label-income">Monthly Income (leave blank if owner-occupied)</label>
+                    <label >Monthly Income (leave blank if owner-occupied)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="monthlyIncome" type="text" inputmode="numeric" value="0" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label class="label-cost">Monthly Costs (mortgage, insurance, taxes, maintenance)</label>
+                    <label >Monthly Costs (mortgage, insurance, taxes, maintenance)</label>
                     <div class="input-wrapper">
                         <span>$</span>
                         <input id="monthlyCosts" type="text" inputmode="numeric" value="1,500" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
@@ -530,11 +530,11 @@
                 <div class="profit-summary" style="margin-top: 24px;">
                     <div class="result-row">
                         <span class="result-label">Total Income</span>
-                        <span class="result-value" id="monthly-income">$0</span>
+                        <span class="result-value value-income" id="monthly-income">$0</span>
                     </div>
                     <div class="result-row">
                         <span class="result-label">Total Costs</span>
-                        <span class="result-value" id="monthly-costs">$0</span>
+                        <span class="result-value value-cost" id="monthly-costs">$0</span>
                     </div>
                     <div class="profit-total">
                         <div class="profit-total-label">Total Cash Flow</div>
