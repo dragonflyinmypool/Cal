@@ -62,15 +62,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .logo {
@@ -89,7 +82,7 @@
             background-clip: text;
         }
 
-        /* Tabs Styling */
+        /* Tabs */
         .tabs {
             display: flex;
             background: rgba(30, 41, 59, 0.5);
@@ -101,22 +94,34 @@
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 10px 4px;
             border: none;
             background: transparent;
             color: var(--text-dim);
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
             border-radius: 10px;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .tab-btn.active {
             background: var(--surface-color);
             color: var(--primary-accent);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            border-radius: 1px;
         }
 
         .tab-content {
@@ -129,15 +134,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .card {
@@ -148,26 +146,19 @@
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .card-header i {
-            color: var(--primary-accent);
-        }
-
-        .card h2 {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--primary-accent);
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
+            opacity: 0.5;
         }
 
         .input-group {
@@ -188,14 +179,23 @@
             align-items: center;
         }
 
-        .input-wrapper span {
+        .input-wrapper span.prefix {
             position: absolute;
             left: 10px;
             color: var(--text-dim);
             font-size: 15px;
+            pointer-events: none;
         }
 
-        input {
+        .input-wrapper span.suffix {
+            position: absolute;
+            right: 10px;
+            color: var(--text-dim);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        input, select {
             width: 100%;
             padding: 12px 12px 12px 24px;
             background: rgba(15, 23, 42, 0.5);
@@ -208,11 +208,131 @@
             transition: border-color 0.2s;
         }
 
-        input:focus {
+        input:focus, select:focus {
             border-color: var(--primary-accent);
             background: rgba(15, 23, 42, 0.7);
         }
 
+        select {
+            padding-left: 12px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input.no-prefix {
+            padding-left: 12px;
+        }
+
+        input[readonly] {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        /* Display-only calculated field */
+        .display-field {
+            padding: 12px;
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .display-field .display-label {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .display-field .display-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-accent);
+        }
+
+        /* Smart default reset button */
+        .smart-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .smart-input-row .input-wrapper {
+            flex: 1;
+        }
+
+        .reset-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-dim);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+        }
+
+        .reset-btn.visible {
+            display: flex;
+        }
+
+        /* Down payment toggle */
+        .dp-toggle {
+            display: flex;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-left: 6px;
+            flex-shrink: 0;
+        }
+
+        .dp-toggle button {
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dp-toggle button.active {
+            background: var(--primary-accent);
+            color: var(--bg-color);
+        }
+
+        .dp-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .dp-row .input-wrapper {
+            flex: 1;
+        }
+
+        .dp-calculated {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 4px;
+            padding-left: 2px;
+        }
+
+        /* Results */
         .result-row {
             display: flex;
             justify-content: space-between;
@@ -229,46 +349,9 @@
             font-weight: 600;
         }
 
-        .profit-highlight {
-            margin-top: 16px;
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .value-cost { color: var(--cost-color); }
+        .value-income { color: var(--income-color); }
 
-        .profit-amount {
-            font-size: 36px;
-            font-weight: 700;
-            margin-top: 4px;
-        }
-
-        /* Profit Display in Returns Tab */
-        .profit-display {
-            margin-top: 24px;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            text-align: center;
-        }
-
-        .profit-label {
-            font-size: 12px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-
-        .profit-value {
-            font-size: 32px;
-            font-weight: 700;
-            transition: color 0.3s ease;
-        }
-
-        /* Profit Summary Panel */
         .profit-summary {
             margin-top: 24px;
             padding: 20px;
@@ -278,41 +361,13 @@
             backdrop-filter: blur(8px);
         }
 
-        .profit-summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .profit-metric {
-            text-align: center;
-            padding: 12px;
-            background: rgba(15, 23, 42, 0.4);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .profit-metric-label {
-            font-size: 11px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .profit-metric-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
         .profit-total {
             padding: 16px;
             background: rgba(255, 255, 255, 0.02);
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             text-align: center;
+            margin-top: 8px;
         }
 
         .profit-total-label {
@@ -329,41 +384,46 @@
             transition: color 0.3s ease;
         }
 
-        /* Enhanced card styling */
-        .card {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+        /* Section divider */
+        .section-divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary-accent), transparent);
-            opacity: 0.5;
+            background: var(--border-color);
+            margin: 16px 0;
         }
 
-        /* Improved profit metric styling */
-        .profit-metric {
+        .section-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            margin-top: 4px;
+        }
+
+        /* Total Profit tab */
+        .summary-metric {
+            text-align: center;
+            padding: 16px;
             background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(129, 140, 248, 0.05) 100%);
             border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
         }
 
-        .profit-metric-value {
-            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .summary-metric-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
-        /* Cost/Income result value colors */
-        .value-cost { color: var(--cost-color); }
-        .value-income { color: var(--income-color); }
+        .summary-metric-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
 
-        /* Info tooltip */
+        /* Info button */
         .info-btn {
             background: none;
             border: 1px solid var(--border-color);
@@ -407,22 +467,6 @@
         .info-btn:focus .tooltip {
             display: block;
         }
-
-        /* Tab styling improvements */
-        .tab-btn {
-            position: relative;
-        }
-
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
-            border-radius: 1px;
-        }
     </style>
 </head>
 
@@ -440,133 +484,240 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('buySell')">Buy & Sell</button>
-            <button class="tab-btn" onclick="switchTab('monthly')">Monthly Costs</button>
-            <button class="tab-btn" onclick="switchTab('summary')">Total Profit</button>
+            <button class="tab-btn active" data-tab="buy">Buy</button>
+            <button class="tab-btn" data-tab="sell">Sell</button>
+            <button class="tab-btn" data-tab="monthly">Monthly</button>
+            <button class="tab-btn" data-tab="summary">Profit</button>
         </div>
 
-        <!-- Buying the House Tab -->
-        <div id="buySell" class="tab-content active">
+        <!-- Buy Tab -->
+        <div id="buy" class="tab-content active">
             <div class="card">
                 <div class="input-group">
-                    <label >Home Price</label>
+                    <label>Home Price</label>
                     <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="homePrice" type="text" inputmode="numeric" value="200,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label >Closing Costs (2-5% of price)</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="closingCosts" type="text" inputmode="numeric" value="8,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label >Repairs / Upgrades</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="repairs" type="text" inputmode="numeric" value="20,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label >Estimated Sale Price</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="salePrice" type="text" inputmode="numeric" value="280,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label >Selling Costs (~6% of sale price)</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="sellingCosts" type="text" inputmode="numeric" value="17,000" oninput="formatInput(this); calculateBuySellProfit(); calculateTotalProfit()">
+                        <span class="prefix">$</span>
+                        <input id="homePrice" type="text" inputmode="numeric" value="300,000">
                     </div>
                 </div>
 
-                <!-- Buy/Sell Results -->
-                <div class="profit-summary" style="margin-top: 24px;">
-                    <div class="result-row">
-                        <span class="result-label">What You Put In</span>
-                        <span class="result-value value-cost" id="buySell-invested">$0</span>
+                <div class="input-group">
+                    <label>Down Payment</label>
+                    <div class="dp-row">
+                        <div class="input-wrapper">
+                            <span class="prefix" id="dpPrefix">%</span>
+                            <input id="downPayment" type="text" inputmode="numeric" value="10">
+                        </div>
+                        <div class="dp-toggle">
+                            <button class="active" data-mode="percent">%</button>
+                            <button data-mode="dollar">$</button>
+                        </div>
                     </div>
-                    <div class="result-row">
-                        <span class="result-label">What You'll Get Back</span>
-                        <span class="result-value value-income" id="buySell-proceeds">$0</span>
+                    <div class="dp-calculated" id="dpCalculated">$30,000</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Interest Rate</label>
+                    <div class="input-wrapper">
+                        <input id="interestRate" type="text" inputmode="decimal" value="6.5" class="no-prefix" style="padding-right: 30px;">
+                        <span class="suffix">%</span>
                     </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Loan Term</label>
+                    <select id="loanTerm">
+                        <option value="30" selected>30 years</option>
+                        <option value="15">15 years</option>
+                    </select>
+                </div>
+
+                <div class="display-field" style="margin-bottom: 12px;">
+                    <span class="display-label">Monthly Mortgage Payment</span>
+                    <span class="display-value" id="monthlyMortgage">$0</span>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="input-group">
+                    <label>Closing Costs</label>
+                    <div class="smart-input-row">
+                        <div class="input-wrapper">
+                            <span class="prefix">$</span>
+                            <input id="closingCosts" type="text" inputmode="numeric" value="9,000">
+                        </div>
+                        <button class="reset-btn" id="resetClosingCosts" title="Reset to 3% of home price">&#8634;</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Repairs / Upgrades</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">$</span>
+                        <input id="repairs" type="text" inputmode="numeric" value="0">
+                    </div>
+                </div>
+
+                <!-- Buy Results -->
+                <div class="profit-summary">
                     <div class="profit-total">
-                        <div class="profit-total-label">Your Gain / Loss</div>
-                        <div class="profit-total-value" id="buySell-profit">$0</div>
+                        <div class="profit-total-label">Cash You Need</div>
+                        <div class="profit-total-value value-cost" id="buy-cashNeeded">$0</div>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- Monthly Costs/Profit Tab -->
-        <div id="monthly" class="tab-content">
+        <!-- Sell Tab -->
+        <div id="sell" class="tab-content">
             <div class="card">
                 <div class="input-group">
-                    <label >Monthly Income (leave blank if owner-occupied)</label>
+                    <label>Years Owned</label>
+                    <input id="yearsOwned" type="number" value="5" min="1" class="no-prefix" style="padding-left: 12px;">
+                </div>
+
+                <div class="input-group">
+                    <label>Estimated Sale Price</label>
                     <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="monthlyIncome" type="text" inputmode="numeric" value="0" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
+                        <span class="prefix">$</span>
+                        <input id="salePrice" type="text" inputmode="numeric" value="360,000">
                     </div>
                 </div>
+
                 <div class="input-group">
-                    <label >Monthly Costs (mortgage, insurance, taxes, maintenance)</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="monthlyCosts" type="text" inputmode="numeric" value="1,500" oninput="formatInput(this); calculateMonthlyProfit(); calculateTotalProfit()">
+                    <label>Selling Costs</label>
+                    <div class="smart-input-row">
+                        <div class="input-wrapper">
+                            <span class="prefix">$</span>
+                            <input id="sellingCosts" type="text" inputmode="numeric" value="21,600">
+                        </div>
+                        <button class="reset-btn" id="resetSellingCosts" title="Reset to 6% of sale price">&#8634;</button>
                     </div>
                 </div>
+
+                <div class="display-field" style="margin-bottom: 0;">
+                    <span class="display-label">Remaining Mortgage</span>
+                    <span class="display-value" id="remainingMortgage">$0</span>
+                </div>
+
+                <!-- Sell Results -->
+                <div class="profit-summary">
+                    <div class="result-row">
+                        <span class="result-label">Sale Price</span>
+                        <span class="result-value value-income" id="sell-salePrice">$0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Selling Costs</span>
+                        <span class="result-value value-cost" id="sell-sellingCosts">$0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Remaining Mortgage</span>
+                        <span class="result-value value-cost" id="sell-remainingMortgage">$0</span>
+                    </div>
+                    <div class="profit-total">
+                        <div class="profit-total-label">What You Walk Away With</div>
+                        <div class="profit-total-value" id="sell-netProceeds">$0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Costs Tab -->
+        <div id="monthly" class="tab-content">
+            <div class="card">
+                <div class="display-field" style="margin-bottom: 12px;">
+                    <span class="display-label">Mortgage Payment</span>
+                    <span class="display-value" id="monthly-mortgage">$0</span>
+                </div>
+
                 <div class="input-group">
-                    <label>How Many Months?</label>
-                    <input id="monthsHeld" type="number" value="12" style="padding-left:12px;"
-                        oninput="calculateMonthlyProfit(); calculateTotalProfit()">
+                    <label>Property Tax</label>
+                    <div class="smart-input-row">
+                        <div class="input-wrapper">
+                            <span class="prefix">$</span>
+                            <input id="propertyTax" type="text" inputmode="numeric" value="275">
+                        </div>
+                        <button class="reset-btn" id="resetPropertyTax" title="Reset to 1.1% of home price / 12">&#8634;</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Insurance</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">$</span>
+                        <input id="insurance" type="text" inputmode="numeric" value="150">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>HOA</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">$</span>
+                        <input id="hoa" type="text" inputmode="numeric" value="0">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Maintenance</label>
+                    <div class="smart-input-row">
+                        <div class="input-wrapper">
+                            <span class="prefix">$</span>
+                            <input id="maintenance" type="text" inputmode="numeric" value="250">
+                        </div>
+                        <button class="reset-btn" id="resetMaintenance" title="Reset to 1% of home price / 12">&#8634;</button>
+                    </div>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="input-group">
+                    <label>Monthly Income (rental income, $0 if owner-occupied)</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">$</span>
+                        <input id="monthlyIncome" type="text" inputmode="numeric" value="0">
+                    </div>
                 </div>
 
                 <!-- Monthly Results -->
-                <div class="profit-summary" style="margin-top: 24px;">
+                <div class="profit-summary">
                     <div class="result-row">
-                        <span class="result-label">Total Income</span>
-                        <span class="result-value value-income" id="monthly-income">$0</span>
+                        <span class="result-label">Total Monthly Costs</span>
+                        <span class="result-value value-cost" id="monthly-totalCosts">$0</span>
                     </div>
                     <div class="result-row">
-                        <span class="result-label">Total Costs</span>
-                        <span class="result-value value-cost" id="monthly-costs">$0</span>
+                        <span class="result-label">Monthly Cash Flow</span>
+                        <span class="result-value" id="monthly-cashFlow">$0</span>
                     </div>
                     <div class="profit-total">
-                        <div class="profit-total-label">Total Cash Flow</div>
-                        <div class="profit-total-value" id="monthly-profit">$0</div>
-                    </div>
-                    <div class="result-row" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-                        <span class="result-label">Per Month</span>
-                        <span class="result-value" id="monthly-average">$0</span>
+                        <div class="profit-total-label" id="monthly-periodLabel">Total Over 5 Years</div>
+                        <div class="profit-total-value" id="monthly-totalOverPeriod">$0</div>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- Your Investment Summary Tab -->
+        <!-- Total Profit Tab -->
         <div id="summary" class="tab-content">
             <div class="card">
-                <div class="profit-summary" style="margin-top: 0;">
-                    <div class="result-row">
-                        <span class="result-label">From Buying & Selling</span>
-                        <span class="result-value" id="summary-buySell">$0</span>
-                    </div>
-                    <div class="result-row">
-                        <span class="result-label">From Monthly Cash Flow</span>
-                        <span class="result-value" id="summary-monthly">$0</span>
-                    </div>
-                    <div class="profit-total">
-                        <div class="profit-total-label">Total Gain / Loss</div>
-                        <div class="profit-total-value" id="summary-total">$0</div>
-                    </div>
+                <div class="summary-metric">
+                    <div class="summary-metric-label">Cash to Buy</div>
+                    <div class="summary-metric-value value-cost" id="summary-cashToBuy">$0</div>
                 </div>
 
+                <div class="summary-metric">
+                    <div class="summary-metric-label">What You Walk Away With</div>
+                    <div class="summary-metric-value" id="summary-netProceeds">$0</div>
+                </div>
+
+                <div class="summary-metric">
+                    <div class="summary-metric-label" id="summary-cashFlowLabel">Monthly Cash Flow (5 yrs)</div>
+                    <div class="summary-metric-value" id="summary-cashFlow">$0</div>
+                </div>
+
+                <div class="profit-total" style="margin-top: 16px;">
+                    <div class="profit-total-label">Total Profit / Loss</div>
+                    <div class="profit-total-value" id="summary-total">$0</div>
+                </div>
             </div>
         </div>
     </div>
@@ -574,32 +725,17 @@
     <script>
         lucide.createIcons();
 
-        // State management
-        let buySellData = {
-            invested: 0,
-            proceeds: 0,
-            profit: 0
-        };
+        // --- Helpers ---
+        function val(id) {
+            return Number(document.getElementById(id).value.replace(/,/g, '')) || 0;
+        }
 
-        let monthlyData = {
-            totalIncome: 0,
-            totalCosts: 0,
-            profit: 0,
-            monthlyAverage: 0
-        };
-
-        let totalData = {
-            buySellProfit: 0,
-            monthlyProfit: 0,
-            totalProfit: 0
-        };
-
-        function val(id) { return Number(document.getElementById(id).value.replace(/,/g, '')) || 0; }
-        function format(num) {
+        function fmt(num) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency', currency: 'USD', maximumFractionDigits: 0
             }).format(num);
         }
+
         function formatInput(el) {
             const raw = el.value.replace(/,/g, '');
             if (raw === '' || raw === '-') return;
@@ -613,69 +749,240 @@
             }
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+        function setColor(el, value) {
+            el.style.color = value >= 0 ? 'var(--success)' : 'var(--error)';
         }
 
-        function calculateBuySellProfit() {
-            const homePrice = val("homePrice");
-            const closingCosts = val("closingCosts");
-            const repairs = val("repairs");
-            const salePrice = val("salePrice");
+        // --- Smart Defaults ---
+        const smartDefaults = {
+            closingCosts: { manual: false, calc: () => Math.round(val('homePrice') * 0.03) },
+            sellingCosts: { manual: false, calc: () => Math.round(val('salePrice') * 0.06) },
+            propertyTax: { manual: false, calc: () => Math.round(val('homePrice') * 0.011 / 12) },
+            maintenance: { manual: false, calc: () => Math.round(val('homePrice') * 0.01 / 12) },
+        };
 
-            buySellData.invested = homePrice + closingCosts + repairs;
-            buySellData.proceeds = salePrice - val("sellingCosts");
-            buySellData.profit = buySellData.proceeds - buySellData.invested;
-
-            // Update display
-            document.getElementById("buySell-invested").textContent = format(buySellData.invested);
-            document.getElementById("buySell-proceeds").textContent = format(buySellData.proceeds);
-            const profitEl = document.getElementById("buySell-profit");
-            profitEl.textContent = format(buySellData.profit);
-            profitEl.style.color = buySellData.profit >= 0 ? "var(--success)" : "var(--error)";
+        function applySmartDefault(id) {
+            const sd = smartDefaults[id];
+            if (!sd.manual) {
+                const v = sd.calc();
+                document.getElementById(id).value = v.toLocaleString('en-US');
+            }
+            const resetBtn = document.getElementById('reset' + id.charAt(0).toUpperCase() + id.slice(1));
+            if (resetBtn) {
+                resetBtn.classList.toggle('visible', sd.manual);
+            }
         }
 
-        function calculateMonthlyProfit() {
-            const monthlyIncome = val("monthlyIncome");
-            const monthlyCosts = val("monthlyCosts");
-            const monthsHeld = val("monthsHeld");
-
-            monthlyData.totalIncome = monthlyIncome * monthsHeld;
-            monthlyData.totalCosts = monthlyCosts * monthsHeld;
-            monthlyData.profit = monthlyData.totalIncome - monthlyData.totalCosts;
-            monthlyData.monthlyAverage = monthsHeld > 0 ? (monthlyData.profit / monthsHeld) : 0;
-
-            // Update display
-            document.getElementById("monthly-income").textContent = format(monthlyData.totalIncome);
-            document.getElementById("monthly-costs").textContent = format(monthlyData.totalCosts);
-            const profitEl = document.getElementById("monthly-profit");
-            profitEl.textContent = format(monthlyData.profit);
-            profitEl.style.color = monthlyData.profit >= 0 ? "var(--success)" : "var(--error)";
-            document.getElementById("monthly-average").textContent = format(monthlyData.monthlyAverage);
+        function applyAllSmartDefaults() {
+            for (const id in smartDefaults) {
+                applySmartDefault(id);
+            }
         }
 
-        function calculateTotalProfit() {
-            totalData.buySellProfit = buySellData.profit;
-            totalData.monthlyProfit = monthlyData.profit;
-            totalData.totalProfit = totalData.buySellProfit + totalData.monthlyProfit;
+        // Wire smart default inputs: mark manual on user edit
+        for (const id in smartDefaults) {
+            const input = document.getElementById(id);
+            input.addEventListener('input', function () {
+                smartDefaults[id].manual = true;
+                formatInput(this);
+                applySmartDefault(id);
+                recalcAll();
+            });
 
-            // Update display
-            document.getElementById("summary-buySell").textContent = format(totalData.buySellProfit);
-            document.getElementById("summary-monthly").textContent = format(totalData.monthlyProfit);
-            const totalEl = document.getElementById("summary-total");
-            totalEl.textContent = format(totalData.totalProfit);
-            totalEl.style.color = totalData.totalProfit >= 0 ? "var(--success)" : "var(--error)";
-
+            const resetBtn = document.getElementById('reset' + id.charAt(0).toUpperCase() + id.slice(1));
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function () {
+                    smartDefaults[id].manual = false;
+                    applySmartDefault(id);
+                    recalcAll();
+                });
+            }
         }
 
+        // --- Down Payment Toggle ---
+        let dpMode = 'percent'; // 'percent' or 'dollar'
 
-        // Initialize calculations
-        calculateBuySellProfit();
-        calculateMonthlyProfit();
-        calculateTotalProfit();
+        document.querySelectorAll('.dp-toggle button').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.dp-toggle button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const newMode = this.dataset.mode;
+                const homePrice = val('homePrice');
+                const dpInput = document.getElementById('downPayment');
+                const prefix = document.getElementById('dpPrefix');
+
+                if (newMode === 'dollar' && dpMode === 'percent') {
+                    const pct = parseFloat(dpInput.value.replace(/,/g, '')) || 0;
+                    const dollars = Math.round(homePrice * pct / 100);
+                    dpInput.value = dollars.toLocaleString('en-US');
+                    prefix.textContent = '$';
+                } else if (newMode === 'percent' && dpMode === 'dollar') {
+                    const dollars = parseFloat(dpInput.value.replace(/,/g, '')) || 0;
+                    const pct = homePrice > 0 ? (dollars / homePrice * 100) : 0;
+                    dpInput.value = Math.round(pct * 10) / 10;
+                    prefix.textContent = '%';
+                }
+                dpMode = newMode;
+                recalcAll();
+            });
+        });
+
+        function getDownPaymentDollars() {
+            const dpVal = parseFloat(document.getElementById('downPayment').value.replace(/,/g, '')) || 0;
+            const homePrice = val('homePrice');
+            if (dpMode === 'percent') {
+                return Math.round(homePrice * dpVal / 100);
+            }
+            return dpVal;
+        }
+
+        function updateDpCalculated() {
+            const dollars = getDownPaymentDollars();
+            const homePrice = val('homePrice');
+            if (dpMode === 'percent') {
+                document.getElementById('dpCalculated').textContent = fmt(dollars);
+            } else {
+                const pct = homePrice > 0 ? (dollars / homePrice * 100) : 0;
+                document.getElementById('dpCalculated').textContent = (Math.round(pct * 10) / 10) + '% of home price';
+            }
+        }
+
+        // --- Mortgage Calculation ---
+        function calcMortgagePayment() {
+            const homePrice = val('homePrice');
+            const dp = getDownPaymentDollars();
+            const principal = homePrice - dp;
+            if (principal <= 0) return 0;
+
+            const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            if (annualRate === 0) return Math.round(principal / (val('loanTerm') * 12));
+            const r = annualRate / 100 / 12;
+            const n = val('loanTerm') * 12;
+            return Math.round(principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1));
+        }
+
+        function calcRemainingBalance() {
+            const homePrice = val('homePrice');
+            const dp = getDownPaymentDollars();
+            const principal = homePrice - dp;
+            if (principal <= 0) return 0;
+
+            const annualRate = parseFloat(document.getElementById('interestRate').value) || 0;
+            const n = val('loanTerm') * 12;
+            const years = val('yearsOwned');
+            const t = years * 12;
+
+            if (t >= n) return 0;
+
+            if (annualRate === 0) {
+                return Math.round(principal * (1 - t / n));
+            }
+
+            const r = annualRate / 100 / 12;
+            return Math.round(principal * (Math.pow(1 + r, n) - Math.pow(1 + r, t)) / (Math.pow(1 + r, n) - 1));
+        }
+
+        // --- Tab Switching ---
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById(this.dataset.tab).classList.add('active');
+                this.classList.add('active');
+            });
+        });
+
+        // --- Input Event Wiring ---
+        const standardInputs = ['homePrice', 'downPayment', 'interestRate', 'repairs', 'salePrice', 'yearsOwned', 'insurance', 'hoa', 'monthlyIncome'];
+        standardInputs.forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener('input', function () {
+                if (['homePrice', 'repairs', 'salePrice', 'insurance', 'hoa', 'monthlyIncome'].includes(id)) {
+                    formatInput(this);
+                }
+                if (id === 'homePrice' || id === 'salePrice') {
+                    applyAllSmartDefaults();
+                }
+                if (id === 'homePrice' || id === 'downPayment') {
+                    updateDpCalculated();
+                }
+                recalcAll();
+            });
+        });
+
+        document.getElementById('loanTerm').addEventListener('change', recalcAll);
+
+        // --- Recalculate Everything ---
+        function recalcAll() {
+            // Mortgage
+            const mortgagePayment = calcMortgagePayment();
+            document.getElementById('monthlyMortgage').textContent = fmt(mortgagePayment);
+            document.getElementById('monthly-mortgage').textContent = fmt(mortgagePayment);
+
+            // Down payment display
+            updateDpCalculated();
+
+            // Buy tab
+            const dp = getDownPaymentDollars();
+            const closingCosts = val('closingCosts');
+            const repairs = val('repairs');
+            const cashNeeded = dp + closingCosts + repairs;
+            document.getElementById('buy-cashNeeded').textContent = fmt(cashNeeded);
+
+            // Sell tab
+            const salePrice = val('salePrice');
+            const sellingCosts = val('sellingCosts');
+            const remaining = calcRemainingBalance();
+            const netProceeds = salePrice - sellingCosts - remaining;
+
+            document.getElementById('remainingMortgage').textContent = fmt(remaining);
+            document.getElementById('sell-salePrice').textContent = fmt(salePrice);
+            document.getElementById('sell-sellingCosts').textContent = '-' + fmt(sellingCosts);
+            document.getElementById('sell-remainingMortgage').textContent = '-' + fmt(remaining);
+            const netEl = document.getElementById('sell-netProceeds');
+            netEl.textContent = fmt(netProceeds);
+            setColor(netEl, netProceeds);
+
+            // Monthly tab
+            const propTax = val('propertyTax');
+            const insurance = val('insurance');
+            const hoa = val('hoa');
+            const maint = val('maintenance');
+            const income = val('monthlyIncome');
+            const totalMonthlyCosts = mortgagePayment + propTax + insurance + hoa + maint;
+            const monthlyCashFlow = income - totalMonthlyCosts;
+            const years = val('yearsOwned');
+            const months = years * 12;
+            const totalOverPeriod = monthlyCashFlow * months;
+
+            document.getElementById('monthly-totalCosts').textContent = fmt(totalMonthlyCosts);
+            const cfEl = document.getElementById('monthly-cashFlow');
+            cfEl.textContent = fmt(monthlyCashFlow);
+            setColor(cfEl, monthlyCashFlow);
+            document.getElementById('monthly-periodLabel').textContent = 'Total Over ' + years + ' Year' + (years !== 1 ? 's' : '');
+            const topEl = document.getElementById('monthly-totalOverPeriod');
+            topEl.textContent = fmt(totalOverPeriod);
+            setColor(topEl, totalOverPeriod);
+
+            // Summary tab
+            document.getElementById('summary-cashToBuy').textContent = fmt(cashNeeded);
+            const snpEl = document.getElementById('summary-netProceeds');
+            snpEl.textContent = fmt(netProceeds);
+            setColor(snpEl, netProceeds);
+            document.getElementById('summary-cashFlowLabel').textContent = 'Monthly Cash Flow (' + years + ' yr' + (years !== 1 ? 's' : '') + ')';
+            const scfEl = document.getElementById('summary-cashFlow');
+            scfEl.textContent = fmt(totalOverPeriod);
+            setColor(scfEl, totalOverPeriod);
+
+            const totalProfit = netProceeds - cashNeeded + totalOverPeriod;
+            const stEl = document.getElementById('summary-total');
+            stEl.textContent = fmt(totalProfit);
+            setColor(stEl, totalProfit);
+        }
+
+        // --- Initialize ---
+        applyAllSmartDefaults();
+        recalcAll();
     </script>
 </body>
 

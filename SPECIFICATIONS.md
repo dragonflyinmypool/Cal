@@ -1,194 +1,197 @@
-# Real Estate Profit Calculator - Specifications (MVP - First-Time Buyers)
+# Real Estate Profit Calculator - Specifications (First-Time Buyers)
+
+**Purpose**: Help first-time buyers understand the real cost of buying, owning, and selling a home as an investment.
+
+**Language**: Simple, everyday terms. "What does it cost?" not "capital gains analysis."
+
+---
 
 ## Tab Structure
 
-### Tab 1: Buying the House
-**Purpose**: Help first-time buyers understand the real cost of buying and selling a home
+### Tab 1: Buy
 
-**Language**: Use simple, everyday terms. Example: "What does it cost to buy and sell?" rather than "capital gains analysis"
+What it costs to get into the house. Includes a mortgage calculator so buyers can see their monthly payment.
 
-#### Input Fields (Simplified)
-| Field | Type | Default | Help Text |
-|-------|------|---------|-----------|
-| Home Price | Currency | $200,000 | What are you paying for the house? |
-| Closing Costs | Currency | $5,000 | Costs at signing (usually 2-5% of price) - includes inspections, title, recording, etc. |
-| Repairs/Upgrades | Currency | $20,000 | *Optional* - How much will you spend fixing/improving it? |
-| Estimated Sale Price | Currency | $280,000 | What do you think you'll sell it for in the future? |
+#### Input Fields
 
-**Why we removed:**
-- Separate "Closing Costs (Buy)" and "Closing Costs (Sell)" - too detailed for MVP, confuses buyers
-- Kept single field that's easier to estimate
+| Field | Type | Default | Smart Default? | Help Text |
+|-------|------|---------|----------------|-----------|
+| Home Price | Currency | $300,000 | No | What are you paying for the house? |
+| Down Payment | Currency/% | 10% | No | Toggle between $ and %. Shows calculated $ amount either way |
+| Interest Rate | Percent | 6.5% | No | Your mortgage interest rate |
+| Loan Term | Dropdown | 30 years | No | 15 or 30 years |
+| → Monthly Mortgage | Display | *calculated* | Always | Auto-calculated, display-only |
+| Closing Costs | Currency | *3% of home price* | **Yes** | Costs at signing (inspections, title, etc.) |
+| Repairs / Upgrades | Currency | $0 | No | _Optional_ - How much will you spend fixing it up? |
 
-#### Calculations
+#### Results
+
 ```
-What You Put In = Home Price + Closing Costs + Repairs
-What You'll Get Back = Estimated Sale Price
-Your Gain/Loss = What You'll Get Back - What You Put In
+Total Cash Needed = Down Payment + Closing Costs + Repairs
 ```
 
-#### Display (Big, Clear, Obvious)
+Displayed clearly at the bottom of the tab: **"Cash You Need: $XX,XXX"**
+
+---
+
+### Tab 2: Sell
+
+What you get when you eventually sell.
+
+#### Input Fields
+
+| Field | Type | Default | Smart Default? | Help Text |
+|-------|------|---------|----------------|-----------|
+| Years Owned | Number | 5 | No | How many years before you sell? |
+| Estimated Sale Price | Currency | $360,000 | No | What do you think you'll sell it for? |
+| Selling Costs | Currency | *6% of sale price* | **Yes** | Agent fees, closing costs, etc. |
+| → Remaining Mortgage | Display | *calculated* | Always | What you still owe on the loan |
+
+#### Results
+
 ```
-┌─────────────────────────────────────┐
-│ BUYING THE HOUSE                    │
-├─────────────────────────────────────┤
-│ What You Put In:        $225,000    │
-│ What You'll Get Back:    $280,000    │
-├─────────────────────────────────────┤
-│ YOUR GAIN/LOSS:         +$55,000 ✓  │
-│                         (green if    │
-│                          positive)   │
-└─────────────────────────────────────┘
+Net Sale Proceeds = Sale Price - Selling Costs - Remaining Mortgage
 ```
 
-#### Chart
-Horizontal bar showing the journey:
+Displayed clearly: **"What You Walk Away With: $XX,XXX"**
+
+---
+
+### Tab 3: Monthly Costs
+
+Broken-out monthly costs so buyers see where the money goes. Mortgage flows in from the Buy tab.
+
+#### Input Fields
+
+| Field | Type | Default | Smart Default? | Help Text |
+|-------|------|---------|----------------|-----------|
+| Mortgage Payment | Display | *from Buy tab* | Always | Read-only, calculated in Buy tab |
+| Property Tax | Currency | *1.1% of home price / 12* | **Yes** | Monthly property tax |
+| Insurance | Currency | $150 | No | Homeowner's insurance per month |
+| HOA | Currency | $0 | No | Homeowner's association fee (if any) |
+| Maintenance | Currency | *1% of home price / 12* | **Yes** | Budget for upkeep and repairs |
+| Monthly Income | Currency | $0 | No | _Optional_ - Rental income, if renting it out |
+
+#### Results
+
 ```
-[Cost: $225k] ────→ [Gain: $55k] ────→ [Sale: $280k]
+Total Monthly Costs = Mortgage + Tax + Insurance + HOA + Maintenance
+Monthly Cash Flow = Monthly Income - Total Monthly Costs
+Total Over Ownership = Monthly Cash Flow × (Years Owned × 12)
+```
+
+Displayed clearly: **"Monthly Cash Flow: +/- $X,XXX"** and **"Total Over X Years: +/- $XX,XXX"**
+
+---
+
+### Tab 4: Total Profit
+
+The big picture — everything combined. No inputs here, just the answer.
+
+#### Display
+
+```
+Cash to Buy:              -$XX,XXX   (from Buy tab)
+What You Walk Away With:  +$XX,XXX   (from Sell tab)
+Monthly Cash Flow Total:  +/- $XX,XXX (from Monthly tab)
+─────────────────────────────────────
+TOTAL PROFIT/LOSS:        +/- $XX,XXX
+```
+
+Big, bold, color-coded: GREEN if profit, RED if loss.
+
+---
+
+## Smart Default System
+
+Some fields auto-calculate from Home Price or Sale Price so buyers don't have to guess.
+
+### How It Works
+
+1. Smart default fields start with an auto-calculated value (e.g., Closing Costs = 3% of Home Price)
+2. If the user edits the field, their value sticks — it switches to "manual mode"
+3. A reset button (↺) appears next to manually-edited fields
+4. Clicking reset restores the auto-calculated value
+
+### Smart Default Fields
+
+| Field | Derives From | Formula |
+|-------|-------------|---------|
+| Closing Costs | Home Price | 3% of Home Price |
+| Selling Costs | Sale Price | 6% of Sale Price |
+| Property Tax | Home Price | 1.1% of Home Price / 12 |
+| Maintenance | Home Price | 1% of Home Price / 12 |
+
+---
+
+## Formulas
+
+### Mortgage Payment (standard amortization)
+
+```
+Monthly Payment = P × [r(1+r)^n] / [(1+r)^n - 1]
+
+Where:
+  P = Loan Amount (Home Price - Down Payment)
+  r = Monthly interest rate (Annual Rate / 12)
+  n = Total payments (Loan Term in years × 12)
+```
+
+### Remaining Mortgage Balance
+
+```
+Remaining Balance = P × [(1+r)^n - (1+r)^t] / [(1+r)^n - 1]
+
+Where:
+  t = Payments made (Years Owned × 12)
+```
+
+### Profit Calculation
+
+```
+Cash to Buy = Down Payment + Closing Costs + Repairs
+Net Sale Proceeds = Sale Price - Selling Costs - Remaining Mortgage
+Monthly Cash Flow Total = (Monthly Income - Total Monthly Costs) × Months Owned
+Total Profit = Net Sale Proceeds - Cash to Buy + Monthly Cash Flow Total
 ```
 
 ---
 
-### Tab 2: Monthly Costs/Profit
-**Purpose**: Help buyers understand ongoing monthly costs vs. income (whether renting it out or living there)
+## Data Flow
 
-**Language**: Keep it simple: "Is this house profitable month-to-month?"
-
-#### Input Fields (Simplified)
-| Field | Type | Default | Help Text |
-|-------|------|---------|-----------|
-| Monthly Income | Currency | $2,500 | *Optional* - Leave blank if you're living here. If renting it out, what's the monthly rent? |
-| Monthly Costs | Currency | $1,500 | Your monthly costs: mortgage + insurance + taxes + maintenance (roughly) |
-| How Many Months | Number | 12 | How long will you own this house? (1 year = 12 months) |
-
-**Why we simplified:**
-- One "Monthly Costs" field instead of separating mortgage, taxes, etc. (buyers don't need that breakdown)
-- One "Monthly Income" field - either they're renting or they're not
-- Users can estimate monthly costs roughly - precision isn't critical for MVP
-
-#### Calculations
-```
-Total Income Over Period = Monthly Income × How Many Months
-Total Costs Over Period = Monthly Costs × How Many Months
-Monthly Profit/Loss = Total Income - Total Costs
-Average Per Month = Monthly Profit/Loss ÷ How Many Months
-```
-
-#### Display (Simple & Clear)
-```
-┌─────────────────────────────────────┐
-│ MONTHLY COSTS/PROFIT                │
-├─────────────────────────────────────┤
-│ Total Income (over period):  $30,000│
-│ Total Costs (over period):   $18,000│
-├─────────────────────────────────────┤
-│ YOUR PROFIT/LOSS:            +$12,000✓
-│ Average per month:           +$1,000 │
-│                         (green if    │
-│                          positive)   │
-└─────────────────────────────────────┘
-```
-
-#### Chart
-Horizontal bar showing monthly balance:
-```
-[Costs: $18k] ───→ [Profit: $12k] ───→ [Income: $30k]
-```
+1. **Home Price** drives smart defaults across all tabs (closing costs, property tax, maintenance)
+2. **Buy tab** calculates mortgage payment → flows into Monthly Costs tab
+3. **Sale Price** drives selling costs smart default
+4. **Buy + Sell tabs** feed loan info → remaining mortgage calculation
+5. **Tab 4** pulls results from all other tabs → shows total profit
+6. All updates happen instantly as user types
 
 ---
 
-### Tab 3: Your Investment Summary
-**Purpose**: The "big picture" - answer the simple question: "Is this a good investment?"
+## Visual Design Principles
 
-**Language**: Use plain language and reassuring framing. This is where it all comes together.
-
-#### Display (SIMPLE - Three Numbers)
-
-```
-┌──────────────────────────────────────────┐
-│ YOUR INVESTMENT SUMMARY                  │
-├──────────────────────────────────────────┤
-│                                          │
-│ Profit from Buying & Selling:            │
-│ + $55,000                                │
-│                                          │
-│ Profit from Monthly Operations:          │
-│ + $12,000                                │
-│                                          │
-├──────────────────────────────────────────┤
-│ YOUR TOTAL GAIN/LOSS:                    │
-│ ✓ $67,000 PROFIT ✓                       │
-│   (BIG, GREEN, obvious if positive)      │
-│                                          │
-└──────────────────────────────────────────┘
-```
-
-#### What We Removed (MVP Simplification)
-- ❌ Separate ROI/Margin calculations (too technical for first-time buyers)
-- ❌ Detailed breakdowns (too much information)
-- ❌ Complex metrics (confusing without education)
-
-**Why?** First-time buyers want ONE answer: "Am I making or losing money?" Not: "What's my 15% IRR vs. 8% ROI?"
-
-#### Visualization (The Chart)
-A single, clean horizontal bar showing all components:
-
-```
-From Buying:    [RED or GREEN bar: $55k]
-From Monthly:   [RED or GREEN bar: $12k]
-Total:          [BOLD LARGE: $67k PROFIT]
-```
-
-Colors:
-- GREEN = positive (making money)
-- RED = negative (losing money)
-- Size = magnitude (bigger bar = bigger impact)
-
-#### Interactions
-- **Automatic Updates**: As user changes numbers in Tabs 1 & 2, this tab updates instantly
-- **No interaction needed here** - just visualization
-
----
-
-## Visual Design Principles (MVP)
-
-**Keep it super simple:**
 - Large, readable numbers
 - Clear color coding (GREEN = profit, RED = loss)
-- ONE chart per tab, not multiple
-- Labels that use "you" language ("Your Gain/Loss" not "Net Proceeds")
+- Labels that use "you" language ("Cash You Need" not "Total Acquisition Cost")
 - Minimal technical jargon
-
----
+- Reuse existing theme from current design
 
 ## Color Scheme
 
-- **Profit (Positive)**: #10b981 (Green) - feels good
-- **Loss (Negative)**: #f43f5e (Red) - warning
-- Keep charts minimal - don't need rainbow of colors
+- **Profit (Positive)**: #10b981 (Green)
+- **Loss (Negative)**: #f43f5e (Red)
 - Reuse existing theme from current design
-
----
-
-## Data Flow (Simple)
-
-1. User enters numbers in Tab 1 → Auto-calculates → Shows result
-2. User enters numbers in Tab 2 → Auto-calculates → Shows result
-3. Tab 3 automatically pulls both results → Shows total
-4. All updates happen instantly as user types
-
----
 
 ## Input Validation
 
-- Keep it forgiving for MVP (users can leave fields blank = $0)
-- All currency fields: Non-negative (no negative prices)
-- Month fields: Positive only (at least 1 month)
-- Display $0 if empty
-
----
+- All currency fields: non-negative
+- Interest rate: 0-100%
+- Years owned: at least 1
+- Down payment: can't exceed home price
+- Empty fields treated as $0
 
 ## Real-time Updates
 
-- Fast: Calculate on every keystroke (oninput event)
-- Smooth: No delays or lag
+- Calculate on every input change (oninput event)
+- No delays or lag
 - All tabs update instantly when switching
