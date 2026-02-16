@@ -62,8 +62,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo {
@@ -134,8 +141,15 @@
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card {
@@ -195,7 +209,8 @@
             pointer-events: none;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 12px 12px 12px 24px;
             background: rgba(15, 23, 42, 0.5);
@@ -208,7 +223,8 @@
             transition: border-color 0.2s;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             border-color: var(--primary-accent);
             background: rgba(15, 23, 42, 0.7);
         }
@@ -349,8 +365,13 @@
             font-weight: 600;
         }
 
-        .value-cost { color: var(--cost-color); }
-        .value-income { color: var(--income-color); }
+        .value-cost {
+            color: var(--cost-color);
+        }
+
+        .value-income {
+            color: var(--income-color);
+        }
 
         .profit-summary {
             margin-top: 24px;
@@ -442,10 +463,12 @@
             position: relative;
             flex-shrink: 0;
         }
+
         .info-btn:hover {
             border-color: var(--primary-accent);
             color: var(--primary-accent);
         }
+
         .tooltip {
             display: none;
             position: absolute;
@@ -463,6 +486,7 @@
             z-index: 10;
             backdrop-filter: blur(12px);
         }
+
         .info-btn:hover .tooltip,
         .info-btn:focus .tooltip {
             display: block;
@@ -479,14 +503,16 @@
                 <h1>Real Estate Profit Calculator</h1>
             </div>
             <button class="info-btn" aria-label="About this tool">i
-                <div class="tooltip">A simple calculator for first-time home buyers to estimate whether a property is a good investment. Enter your costs, expected sale price, and monthly expenses to see your total profit or loss.</div>
+                <div class="tooltip">A simple calculator for first-time home buyers to estimate whether a property is a
+                    good investment. Enter your costs, expected sale price, and monthly expenses to see your total
+                    profit or loss.</div>
             </button>
         </header>
 
         <div class="tabs">
             <button class="tab-btn active" data-tab="buy">Buy</button>
-            <button class="tab-btn" data-tab="sell">Sell</button>
             <button class="tab-btn" data-tab="monthly">Monthly</button>
+            <button class="tab-btn" data-tab="sell">Sell</button>
             <button class="tab-btn" data-tab="summary">Profit</button>
         </div>
 
@@ -519,7 +545,8 @@
                 <div class="input-group">
                     <label>Interest Rate</label>
                     <div class="input-wrapper">
-                        <input id="interestRate" type="text" inputmode="decimal" value="6.5" class="no-prefix" style="padding-right: 30px;">
+                        <input id="interestRate" type="text" inputmode="decimal" value="6.5" class="no-prefix"
+                            style="padding-right: 30px;">
                         <span class="suffix">%</span>
                     </div>
                 </div>
@@ -546,7 +573,8 @@
                             <span class="prefix">$</span>
                             <input id="closingCosts" type="text" inputmode="numeric" value="9,000">
                         </div>
-                        <button class="reset-btn" id="resetClosingCosts" title="Reset to 3% of home price">&#8634;</button>
+                        <button class="reset-btn" id="resetClosingCosts"
+                            title="Reset to 3% of home price">&#8634;</button>
                     </div>
                 </div>
 
@@ -573,7 +601,8 @@
             <div class="card">
                 <div class="input-group">
                     <label>Years Owned</label>
-                    <input id="yearsOwned" type="number" value="5" min="1" class="no-prefix" style="padding-left: 12px;">
+                    <input id="yearsOwned" type="number" value="5" min="1" class="no-prefix"
+                        style="padding-left: 12px;">
                 </div>
 
                 <div class="input-group">
@@ -591,7 +620,8 @@
                             <span class="prefix">$</span>
                             <input id="sellingCosts" type="text" inputmode="numeric" value="21,600">
                         </div>
-                        <button class="reset-btn" id="resetSellingCosts" title="Reset to 6% of sale price">&#8634;</button>
+                        <button class="reset-btn" id="resetSellingCosts"
+                            title="Reset to 6% of sale price">&#8634;</button>
                     </div>
                 </div>
 
@@ -631,13 +661,27 @@
                 </div>
 
                 <div class="input-group">
+                    <label>PMI (Private Mortgage Insurance)</label>
+                    <div class="smart-input-row">
+                        <div class="input-wrapper">
+                            <span class="prefix">$</span>
+                            <input id="pmi" type="text" inputmode="numeric" value="0">
+                        </div>
+                        <button class="reset-btn" id="resetPmi"
+                            title="Reset to 0.75% of loan / 12">&#8634;</button>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-dim); margin-top: 3px; padding-left: 2px;">Required when down payment is less than 20%</div>
+                </div>
+
+                <div class="input-group">
                     <label>Property Tax</label>
                     <div class="smart-input-row">
                         <div class="input-wrapper">
                             <span class="prefix">$</span>
                             <input id="propertyTax" type="text" inputmode="numeric" value="275">
                         </div>
-                        <button class="reset-btn" id="resetPropertyTax" title="Reset to 1.1% of home price / 12">&#8634;</button>
+                        <button class="reset-btn" id="resetPropertyTax"
+                            title="Reset to 1.1% of home price / 12">&#8634;</button>
                     </div>
                 </div>
 
@@ -646,6 +690,14 @@
                     <div class="input-wrapper">
                         <span class="prefix">$</span>
                         <input id="insurance" type="text" inputmode="numeric" value="150">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Utilities (electric, water, gas, trash, internet)</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">$</span>
+                        <input id="utilities" type="text" inputmode="numeric" value="250">
                     </div>
                 </div>
 
@@ -664,7 +716,8 @@
                             <span class="prefix">$</span>
                             <input id="maintenance" type="text" inputmode="numeric" value="250">
                         </div>
-                        <button class="reset-btn" id="resetMaintenance" title="Reset to 1% of home price / 12">&#8634;</button>
+                        <button class="reset-btn" id="resetMaintenance"
+                            title="Reset to 1% of home price / 12">&#8634;</button>
                     </div>
                 </div>
 
@@ -757,6 +810,16 @@
         const smartDefaults = {
             closingCosts: { manual: false, calc: () => Math.round(val('homePrice') * 0.03) },
             sellingCosts: { manual: false, calc: () => Math.round(val('salePrice') * 0.06) },
+            pmi: {
+                manual: false,
+                calc: () => {
+                    const dp = getDownPaymentDollars();
+                    const homePrice = val('homePrice');
+                    if (homePrice === 0 || dp / homePrice >= 0.2) return 0;
+                    const loan = homePrice - dp;
+                    return Math.round(loan * 0.0075 / 12);
+                }
+            },
             propertyTax: { manual: false, calc: () => Math.round(val('homePrice') * 0.011 / 12) },
             maintenance: { manual: false, calc: () => Math.round(val('homePrice') * 0.01 / 12) },
         };
@@ -893,14 +956,14 @@
         });
 
         // --- Input Event Wiring ---
-        const standardInputs = ['homePrice', 'downPayment', 'interestRate', 'repairs', 'salePrice', 'yearsOwned', 'insurance', 'hoa', 'monthlyIncome'];
+        const standardInputs = ['homePrice', 'downPayment', 'interestRate', 'repairs', 'salePrice', 'yearsOwned', 'insurance', 'utilities', 'hoa', 'monthlyIncome'];
         standardInputs.forEach(id => {
             const el = document.getElementById(id);
             el.addEventListener('input', function () {
-                if (['homePrice', 'repairs', 'salePrice', 'insurance', 'hoa', 'monthlyIncome'].includes(id)) {
+                if (['homePrice', 'repairs', 'salePrice', 'insurance', 'utilities', 'hoa', 'monthlyIncome'].includes(id)) {
                     formatInput(this);
                 }
-                if (id === 'homePrice' || id === 'salePrice') {
+                if (id === 'homePrice' || id === 'salePrice' || id === 'downPayment') {
                     applyAllSmartDefaults();
                 }
                 if (id === 'homePrice' || id === 'downPayment') {
@@ -944,12 +1007,14 @@
             setColor(netEl, netProceeds);
 
             // Monthly tab
+            const pmi = val('pmi');
             const propTax = val('propertyTax');
             const insurance = val('insurance');
+            const utilities = val('utilities');
             const hoa = val('hoa');
             const maint = val('maintenance');
             const income = val('monthlyIncome');
-            const totalMonthlyCosts = mortgagePayment + propTax + insurance + hoa + maint;
+            const totalMonthlyCosts = mortgagePayment + pmi + propTax + insurance + utilities + hoa + maint;
             const monthlyCashFlow = income - totalMonthlyCosts;
             const years = val('yearsOwned');
             const months = years * 12;

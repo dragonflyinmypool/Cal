@@ -66,8 +66,10 @@ Broken-out monthly costs so buyers see where the money goes. Mortgage flows in f
 | Field | Type | Default | Smart Default? | Help Text |
 |-------|------|---------|----------------|-----------|
 | Mortgage Payment | Display | *from Buy tab* | Always | Read-only, calculated in Buy tab |
+| PMI | Currency | *0.75% of loan / 12* | **Yes** | Private Mortgage Insurance — required when down payment < 20%. Auto-sets to $0 when equity ≥ 20% |
 | Property Tax | Currency | *1.1% of home price / 12* | **Yes** | Monthly property tax |
 | Insurance | Currency | $150 | No | Homeowner's insurance per month |
+| Utilities | Currency | $250 | No | Electric, water, gas, trash, internet |
 | HOA | Currency | $0 | No | Homeowner's association fee (if any) |
 | Maintenance | Currency | *1% of home price / 12* | **Yes** | Budget for upkeep and repairs |
 | Monthly Income | Currency | $0 | No | _Optional_ - Rental income, if renting it out |
@@ -75,7 +77,7 @@ Broken-out monthly costs so buyers see where the money goes. Mortgage flows in f
 #### Results
 
 ```
-Total Monthly Costs = Mortgage + Tax + Insurance + HOA + Maintenance
+Total Monthly Costs = Mortgage + PMI + Tax + Insurance + Utilities + HOA + Maintenance
 Monthly Cash Flow = Monthly Income - Total Monthly Costs
 Total Over Ownership = Monthly Cash Flow × (Years Owned × 12)
 ```
@@ -119,6 +121,7 @@ Some fields auto-calculate from Home Price or Sale Price so buyers don't have to
 |-------|-------------|---------|
 | Closing Costs | Home Price | 3% of Home Price |
 | Selling Costs | Sale Price | 6% of Sale Price |
+| PMI | Home Price, Down Payment | 0.75% of Loan Amount / 12 (auto $0 when down payment ≥ 20%) |
 | Property Tax | Home Price | 1.1% of Home Price / 12 |
 | Maintenance | Home Price | 1% of Home Price / 12 |
 
@@ -159,7 +162,7 @@ Total Profit = Net Sale Proceeds - Cash to Buy + Monthly Cash Flow Total
 
 ## Data Flow
 
-1. **Home Price** drives smart defaults across all tabs (closing costs, property tax, maintenance)
+1. **Home Price** drives smart defaults across all tabs (closing costs, PMI, property tax, maintenance)
 2. **Buy tab** calculates mortgage payment → flows into Monthly Costs tab
 3. **Sale Price** drives selling costs smart default
 4. **Buy + Sell tabs** feed loan info → remaining mortgage calculation
