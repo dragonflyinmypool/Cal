@@ -417,125 +417,145 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('investment')">Investment</button>
-            <button class="tab-btn" onclick="switchTab('revenue')">Revenue</button>
-            <button class="tab-btn" onclick="switchTab('profit')">Profit</button>
+            <button class="tab-btn active" onclick="switchTab('buySell')">Buying the House</button>
+            <button class="tab-btn" onclick="switchTab('monthly')">Monthly Costs/Profit</button>
+            <button class="tab-btn" onclick="switchTab('summary')">Your Investment Summary</button>
         </div>
 
-        <!-- Investment Tab -->
-        <div id="investment" class="tab-content active">
+        <!-- Buying the House Tab -->
+        <div id="buySell" class="tab-content active">
             <div class="card">
                 <div class="input-group">
-                    <label>Purchase Price</label>
+                    <label>Home Price</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="purchasePrice" type="number" value="200000" oninput="calculate()">
+                        <input id="homePrice" type="number" value="200000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Closing Costs (Buy)</label>
+                    <label>Closing Costs (2-5% of price)</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="buyClosing" type="number" value="5000" oninput="calculate()">
+                        <input id="closingCosts" type="number" value="8000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Repairs</label>
+                    <label>Repairs / Upgrades</label>
                     <div class="input-wrapper">
                         <span>$</span>
-                        <input id="repairs" type="number" value="20000" oninput="calculate()">
+                        <input id="repairs" type="number" value="20000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="input-group">
-                        <label>Monthly Exp.</label>
-                        <div class="input-wrapper">
-                            <span>$</span>
-                            <input id="monthlyExpenses" type="number" value="1500" oninput="calculate()">
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>Months Held</label>
-                        <input id="monthsHeld" type="number" value="12" style="padding-left:12px;"
-                            oninput="calculate()">
+                <div class="input-group">
+                    <label>Estimated Sale Price</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="salePrice" type="number" value="280000" oninput="calculateBuySellProfit(); calculateTotalProfit()">
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Revenue Tab -->
-        <div id="revenue" class="tab-content">
-            <div class="card">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div class="input-group">
-                        <label>Monthly Rent</label>
-                        <div class="input-wrapper">
-                            <span>$</span>
-                            <input id="rent" type="number" value="2500" oninput="calculate()">
-                        </div>
+                <!-- Buy/Sell Results -->
+                <div class="profit-summary" style="margin-top: 24px;">
+                    <div class="result-row">
+                        <span class="result-label">What You Put In</span>
+                        <span class="result-value" id="buySell-invested">$0</span>
                     </div>
-                    <div class="input-group">
-                        <label>Months Rented</label>
-                        <input id="monthsRented" type="number" value="12" style="padding-left:12px;"
-                            oninput="calculate()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Sale Price</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="salePrice" type="number" value="280000" oninput="calculate()">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Selling Costs</label>
-                    <div class="input-wrapper">
-                        <span>$</span>
-                        <input id="sellCosts" type="number" value="15000" oninput="calculate()">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Profit Tab -->
-        <div id="profit" class="tab-content">
-            <div class="card">
-                <div class="profit-summary" style="margin-top: 0;">
-                    <div class="profit-summary-grid">
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">Total Investment</div>
-                            <div class="profit-metric-value" id="profit-tab-costs">$0</div>
-                        </div>
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">Total Revenue</div>
-                            <div class="profit-metric-value" id="profit-tab-returns">$0</div>
-                        </div>
+                    <div class="result-row">
+                        <span class="result-label">What You'll Get Back</span>
+                        <span class="result-value" id="buySell-proceeds">$0</span>
                     </div>
                     <div class="profit-total">
-                        <div class="profit-total-label">Net Profit</div>
-                        <div class="profit-total-value" id="profit-tab-profit">$0</div>
+                        <div class="profit-total-label">Your Gain / Loss</div>
+                        <div class="profit-total-value" id="buySell-profit">$0</div>
                     </div>
                 </div>
 
-                <!-- Enhanced Waterfall Chart -->
+                <!-- Buy/Sell Chart -->
                 <div class="chart-container">
-                    <div class="chart-label">Profit Breakdown</div>
+                    <div class="chart-label">Buying & Selling Breakdown</div>
                     <div class="chart-canvas-wrapper">
-                        <canvas id="profit-waterfall-chart"></canvas>
+                        <canvas id="buySell-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Costs/Profit Tab -->
+        <div id="monthly" class="tab-content">
+            <div class="card">
+                <div class="input-group">
+                    <label>Monthly Income (leave blank if owner-occupied)</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="monthlyIncome" type="number" value="2500" oninput="calculateMonthlyProfit(); calculateTotalProfit()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Monthly Costs (mortgage, insurance, taxes, maintenance)</label>
+                    <div class="input-wrapper">
+                        <span>$</span>
+                        <input id="monthlyCosts" type="number" value="1500" oninput="calculateMonthlyProfit(); calculateTotalProfit()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>How Many Months?</label>
+                    <input id="monthsHeld" type="number" value="12" style="padding-left:12px;"
+                        oninput="calculateMonthlyProfit(); calculateTotalProfit()">
+                </div>
+
+                <!-- Monthly Results -->
+                <div class="profit-summary" style="margin-top: 24px;">
+                    <div class="result-row">
+                        <span class="result-label">Total Income</span>
+                        <span class="result-value" id="monthly-income">$0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Total Costs</span>
+                        <span class="result-value" id="monthly-costs">$0</span>
+                    </div>
+                    <div class="profit-total">
+                        <div class="profit-total-label">Monthly Profit / Loss</div>
+                        <div class="profit-total-value" id="monthly-profit">$0</div>
+                    </div>
+                    <div class="result-row" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                        <span class="result-label">Average Per Month</span>
+                        <span class="result-value" id="monthly-average">$0</span>
                     </div>
                 </div>
 
-                <!-- Profit Metrics -->
-                <div class="profit-summary">
-                    <div class="profit-summary-grid">
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">ROI</div>
-                            <div class="profit-metric-value" id="profit-roi">0%</div>
-                        </div>
-                        <div class="profit-metric">
-                            <div class="profit-metric-label">Margin</div>
-                            <div class="profit-metric-value" id="profit-margin">0%</div>
-                        </div>
+                <!-- Monthly Chart -->
+                <div class="chart-container">
+                    <div class="chart-label">Monthly Cash Flow</div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="monthly-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Your Investment Summary Tab -->
+        <div id="summary" class="tab-content">
+            <div class="card">
+                <div class="profit-summary" style="margin-top: 0;">
+                    <div class="result-row">
+                        <span class="result-label">From Buying & Selling</span>
+                        <span class="result-value" id="summary-buySell">$0</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">From Monthly Payments</span>
+                        <span class="result-value" id="summary-monthly">$0</span>
+                    </div>
+                    <div class="profit-total">
+                        <div class="profit-total-label">Total Gain / Loss</div>
+                        <div class="profit-total-value" id="summary-total">$0</div>
+                    </div>
+                </div>
+
+                <!-- Total Profit Chart -->
+                <div class="chart-container">
+                    <div class="chart-label">Total Profit Breakdown</div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="summary-chart"></canvas>
                     </div>
                 </div>
             </div>
@@ -545,7 +565,37 @@
     <script>
         lucide.createIcons();
 
-        let profitChartInstance = null;
+        // Chart instances
+        let buySellChartInstance = null;
+        let monthlyChartInstance = null;
+        let summaryChartInstance = null;
+
+        // State management
+        let buySellData = {
+            invested: 0,
+            proceeds: 0,
+            profit: 0
+        };
+
+        let monthlyData = {
+            totalIncome: 0,
+            totalCosts: 0,
+            profit: 0,
+            monthlyAverage: 0
+        };
+
+        let totalData = {
+            buySellProfit: 0,
+            monthlyProfit: 0,
+            totalProfit: 0
+        };
+
+        function val(id) { return Number(document.getElementById(id).value) || 0; }
+        function format(num) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency', currency: 'USD', maximumFractionDigits: 0
+            }).format(num);
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -555,23 +605,77 @@
 
             // Trigger chart resize when switching tabs
             setTimeout(() => {
-                if (profitChartInstance) profitChartInstance.resize();
+                if (buySellChartInstance) buySellChartInstance.resize();
+                if (monthlyChartInstance) monthlyChartInstance.resize();
+                if (summaryChartInstance) summaryChartInstance.resize();
             }, 0);
         }
 
-        function val(id) { return Number(document.getElementById(id).value) || 0; }
-        function format(num) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency', currency: 'USD', maximumFractionDigits: 0
-            }).format(num);
+        function calculateBuySellProfit() {
+            const homePrice = val("homePrice");
+            const closingCosts = val("closingCosts");
+            const repairs = val("repairs");
+            const salePrice = val("salePrice");
+
+            buySellData.invested = homePrice + closingCosts + repairs;
+            buySellData.proceeds = salePrice;
+            buySellData.profit = buySellData.proceeds - buySellData.invested;
+
+            // Update display
+            document.getElementById("buySell-invested").textContent = format(buySellData.invested);
+            document.getElementById("buySell-proceeds").textContent = format(buySellData.proceeds);
+            const profitEl = document.getElementById("buySell-profit");
+            profitEl.textContent = format(buySellData.profit);
+            profitEl.style.color = buySellData.profit >= 0 ? "var(--success)" : "var(--error)";
+
+            // Create/update chart
+            createChart('buySell-chart', buySellData.invested, buySellData.proceeds, buySellData.profit);
         }
 
-        function createWaterfallChart(canvasId, totalOut, totalIn, profit) {
+        function calculateMonthlyProfit() {
+            const monthlyIncome = val("monthlyIncome");
+            const monthlyCosts = val("monthlyCosts");
+            const monthsHeld = val("monthsHeld");
+
+            monthlyData.totalIncome = monthlyIncome * monthsHeld;
+            monthlyData.totalCosts = monthlyCosts * monthsHeld;
+            monthlyData.profit = monthlyData.totalIncome - monthlyData.totalCosts;
+            monthlyData.monthlyAverage = monthsHeld > 0 ? (monthlyData.profit / monthsHeld) : 0;
+
+            // Update display
+            document.getElementById("monthly-income").textContent = format(monthlyData.totalIncome);
+            document.getElementById("monthly-costs").textContent = format(monthlyData.totalCosts);
+            const profitEl = document.getElementById("monthly-profit");
+            profitEl.textContent = format(monthlyData.profit);
+            profitEl.style.color = monthlyData.profit >= 0 ? "var(--success)" : "var(--error)";
+            document.getElementById("monthly-average").textContent = format(monthlyData.monthlyAverage);
+
+            // Create/update chart
+            createChart('monthly-chart', monthlyData.totalCosts, monthlyData.totalIncome, monthlyData.profit);
+        }
+
+        function calculateTotalProfit() {
+            totalData.buySellProfit = buySellData.profit;
+            totalData.monthlyProfit = monthlyData.profit;
+            totalData.totalProfit = totalData.buySellProfit + totalData.monthlyProfit;
+
+            // Update display
+            document.getElementById("summary-buySell").textContent = format(totalData.buySellProfit);
+            document.getElementById("summary-monthly").textContent = format(totalData.monthlyProfit);
+            const totalEl = document.getElementById("summary-total");
+            totalEl.textContent = format(totalData.totalProfit);
+            totalEl.style.color = totalData.totalProfit >= 0 ? "var(--success)" : "var(--error)";
+
+            // Create/update chart
+            createSummaryChart();
+        }
+
+        function createChart(canvasId, cost, revenue, profit) {
             const ctx = document.getElementById(canvasId);
             if (!ctx) return;
 
             const profitColor = profit >= 0 ? '#10b981' : '#f43f5e';
-            const maxValue = Math.max(totalOut, totalIn) * 1.1;
+            const maxValue = Math.max(cost, revenue) * 1.1;
 
             const chartConfig = {
                 type: 'bar',
@@ -579,7 +683,7 @@
                     labels: ['Cost', 'Profit', 'Revenue'],
                     datasets: [{
                         label: 'Amount',
-                        data: [totalOut, Math.max(0, profit), totalIn],
+                        data: [cost, Math.max(0, profit), revenue],
                         backgroundColor: ['#f43f5e', profitColor, '#38bdf8'],
                         borderColor: ['#ff6b7a', profitColor === '#10b981' ? '#34d399' : '#ff7a8f', '#60a5fa'],
                         borderWidth: 2,
@@ -646,48 +750,106 @@
                 }
             };
 
-            // Destroy existing chart if it exists
-            if (canvasId === 'profit-waterfall-chart' && profitChartInstance) {
-                profitChartInstance.destroy();
-            }
-
-            const newChart = new Chart(ctx, chartConfig);
-
-            if (canvasId === 'profit-waterfall-chart') {
-                profitChartInstance = newChart;
+            // Destroy and recreate chart
+            if (canvasId === 'buySell-chart') {
+                if (buySellChartInstance) buySellChartInstance.destroy();
+                buySellChartInstance = new Chart(ctx, chartConfig);
+            } else if (canvasId === 'monthly-chart') {
+                if (monthlyChartInstance) monthlyChartInstance.destroy();
+                monthlyChartInstance = new Chart(ctx, chartConfig);
             }
         }
 
-        function calculate() {
-            const totalOut = val("purchasePrice") + val("buyClosing") + val("repairs") + (val("monthlyExpenses") * val("monthsHeld"));
-            const totalIn = (val("rent") * val("monthsRented")) + (val("salePrice") - val("sellCosts"));
-            const profit = totalIn - totalOut;
+        function createSummaryChart() {
+            const ctx = document.getElementById('summary-chart');
+            if (!ctx) return;
 
-            // Create/update waterfall chart
-            createWaterfallChart('profit-waterfall-chart', totalOut, totalIn, profit);
+            const buySellColor = totalData.buySellProfit >= 0 ? '#10b981' : '#f43f5e';
+            const monthlyColor = totalData.monthlyProfit >= 0 ? '#10b981' : '#f43f5e';
+            const maxValue = Math.max(Math.abs(totalData.buySellProfit), Math.abs(totalData.monthlyProfit), Math.abs(totalData.totalProfit)) * 1.2;
 
-            // Update Profit tab displays
-            document.getElementById("profit-tab-costs").textContent = format(totalOut);
-            document.getElementById("profit-tab-returns").textContent = format(totalIn);
-            const profitTabProfitEl = document.getElementById("profit-tab-profit");
-            profitTabProfitEl.textContent = format(profit);
-            profitTabProfitEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
+            const chartConfig = {
+                type: 'bar',
+                data: {
+                    labels: ['Buying & Selling', 'Monthly Payments', 'Total'],
+                    datasets: [{
+                        label: 'Amount',
+                        data: [totalData.buySellProfit, totalData.monthlyProfit, totalData.totalProfit],
+                        backgroundColor: [buySellColor, monthlyColor, totalData.totalProfit >= 0 ? '#10b981' : '#f43f5e'],
+                        borderColor: [buySellColor, monthlyColor, totalData.totalProfit >= 0 ? '#34d399' : '#ff7a8f'],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'x',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#f8fafc',
+                            borderColor: '#38bdf8',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function (context) {
+                                    return format(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: maxValue,
+                            min: -maxValue,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 12,
+                                    family: "'Outfit', sans-serif"
+                                },
+                                callback: function (value) {
+                                    if (value === 0) return '';
+                                    return '$' + (value / 1000).toFixed(0) + 'k';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 13,
+                                    weight: 600,
+                                    family: "'Outfit', sans-serif"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
 
-            // Calculate and display ROI and Margin
-            const roi = totalOut > 0 ? ((profit / totalOut) * 100) : 0;
-            const margin = totalIn > 0 ? ((profit / totalIn) * 100) : 0;
-
-            document.getElementById("profit-roi").textContent = roi.toFixed(1) + '%';
-            document.getElementById("profit-margin").textContent = margin.toFixed(1) + '%';
-
-            // Color ROI and Margin based on profit
-            const roiEl = document.getElementById("profit-roi");
-            const marginEl = document.getElementById("profit-margin");
-            roiEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
-            marginEl.style.color = profit >= 0 ? "var(--success)" : "var(--error)";
+            if (summaryChartInstance) summaryChartInstance.destroy();
+            summaryChartInstance = new Chart(ctx, chartConfig);
         }
 
-        calculate();
+        // Initialize calculations
+        calculateBuySellProfit();
+        calculateMonthlyProfit();
+        calculateTotalProfit();
     </script>
 </body>
 
